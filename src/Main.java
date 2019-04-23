@@ -8,70 +8,74 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        String csvFile = "../tennis_atp/atp_matches_2018.csv";
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
-        Map<String, Integer> players = new HashMap<>();
-        Map<String, Integer> matchWinWeights = getWinWeights();
-        Map<String, Integer> tournyWeigths = getTourneyWeights();
 
+        Rankings r = new Rankings();
 
-
-
-        try {
-
-            br = new BufferedReader(new FileReader(csvFile));
-            //Remove first line(headers of table)
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-
-                // use comma as separator
-                String[] entry = line.split(cvsSplitBy);
-
-                //If we havent seen the name before start with a rating of 1400
-                if (!players.containsKey(entry[10])) {
-                    players.put(entry[10], 1400);
-                }
-
-                if (!players.containsKey(entry[20])) {
-                    players.put(entry[20], 1400);
-                }
-
-                //winner earns points
-                int winnerPoints = players.get(entry[10]);
-                winnerPoints += (matchWinWeights.get(entry[29])*tournyWeigths.get(entry[4]));
-                players.put(entry[10], winnerPoints);
-
-                //If loser is ranked higher loses more points
-                int loserSeed = entry[18].equals("") ? Integer.MAX_VALUE : Integer.parseInt(entry[18]);
-                int winnerSeed = entry[8].equals("") ? Integer.MAX_VALUE : Integer.parseInt(entry[8]);
-                double discountFactor = loserSeed < winnerSeed ? 1.25 : 1;
-
-                int loserPoints = players.get(entry[20]);
-                loserPoints -= (matchWinWeights.get(entry[29])*tournyWeigths.get(entry[4])*discountFactor);
-                players.put(entry[20], loserPoints);
-
-            }
-
-            Map<String, Integer> treeWinners = new TreeMap<>(players);
-
-            System.out.println(entriesSortedByValues(treeWinners));
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        r.readFile();
+//        String csvFile = "../tennis_atp/atp_matches_2018.csv";
+//        BufferedReader br = null;
+//        String line = "";
+//        String cvsSplitBy = ",";
+//        Map<String, Integer> players = new HashMap<>();
+//        Map<String, Integer> matchWinWeights = getWinWeights();
+//        Map<String, Integer> tournyWeigths = getTourneyWeights();
+//
+//
+//
+//
+//        try {
+//
+//            br = new BufferedReader(new FileReader(csvFile));
+//            //Remove first line(headers of table)
+//            br.readLine();
+//            while ((line = br.readLine()) != null) {
+//
+//                // use comma as separator
+//                String[] entry = line.split(cvsSplitBy);
+//
+//                //If we havent seen the name before start with a rating of 1400
+//                if (!players.containsKey(entry[10])) {
+//                    players.put(entry[10], 1400);
+//                }
+//
+//                if (!players.containsKey(entry[20])) {
+//                    players.put(entry[20], 1400);
+//                }
+//
+//                //winner earns points
+//                int winnerPoints = players.get(entry[10]);
+//                winnerPoints += (matchWinWeights.get(entry[29])*tournyWeigths.get(entry[4]));
+//                players.put(entry[10], winnerPoints);
+//
+//                //If loser is ranked higher loses more points
+//                int loserSeed = entry[18].equals("") ? Integer.MAX_VALUE : Integer.parseInt(entry[18]);
+//                int winnerSeed = entry[8].equals("") ? Integer.MAX_VALUE : Integer.parseInt(entry[8]);
+//                double discountFactor = loserSeed < winnerSeed ? 1.25 : 1;
+//
+//                int loserPoints = players.get(entry[20]);
+//                loserPoints -= (matchWinWeights.get(entry[29])*tournyWeigths.get(entry[4])*discountFactor);
+//                players.put(entry[20], loserPoints);
+//
+//            }
+//
+//            Map<String, Integer> treeWinners = new TreeMap<>(players);
+//
+//            System.out.println(entriesSortedByValues(treeWinners));
+//
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (br != null) {
+//                try {
+//                    br.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     static <K,V extends Comparable<? super V>>
