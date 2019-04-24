@@ -8,7 +8,7 @@ import java.util.List;
 public class Glicko2 {
 
 
-    private static double SYS_CONSTANT  = 0.3; //Between o.3 and 1.2
+    private static double SYS_CONSTANT  = 1.2; //Between 0.3 and 1.2
     private static double CONV_TOLERANCE = 0.000001;
 
     public Double[] convertGlicko2(Double[] rating) {
@@ -71,9 +71,9 @@ public class Glicko2 {
         return (V * sum);
     }
 
-    public double calcNewVol(double RD, double estImprovement, double V) {
+    public double calcNewVol(double RD, double estImprovement, double V, double vol) {
 
-        double a = Math.log(Math.pow(RD,2));
+        double a = Math.log(Math.pow(vol,2));
         double A = a;
         double B;
 
@@ -123,7 +123,7 @@ public class Glicko2 {
 
     }
 
-    public Double[] updateRating(Double V, List<Double> results, Double[] rating, List<Double[]> rivalRatings, double updatedRD) {
+    public Double[] updateRating(Double V, List<Double> results, Double[] rating, List<Double[]> rivalRatings, double updatedRD, double newVol) {
 
         rating[1] = 1 / Math.sqrt((1/Math.pow(updatedRD, 2)) + (1/V));
 
@@ -139,6 +139,7 @@ public class Glicko2 {
         }
 
         rating[0] = oldRating + Math.pow(rating[1],2) * sum;
+        rating[2] = newVol;
 
         return rating;
     }
