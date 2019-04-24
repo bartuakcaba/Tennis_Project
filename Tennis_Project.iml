@@ -20,5 +20,17 @@
         <jarDirectory url="file://$USER_HOME$/Downloads/commons-lang3-3.9" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Downloads/poi-4.1.0" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="file://$USER_HOME$/Downloads/poi-4.1.0/docs/apidocs/dev" />
+        </JAVADOC>
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/Downloads/poi-4.1.0" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

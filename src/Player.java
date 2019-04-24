@@ -8,7 +8,7 @@ public class Player {
     private int id;
     private String name;
     private String country;
-    private double[] rating;
+    private Double[] rating;
 
     public Player(int id, String name, String country) {
         this.id = id;
@@ -32,11 +32,11 @@ public class Player {
         this.country = country;
     }
 
-    public double[] getRating() {
+    public Double[] getRating() {
         return rating;
     }
 
-    public void setRating(double[] rating) {
+    public void setRating(Double[] rating) {
         this.rating = rating;
     }
 

@@ -2,7 +2,6 @@
  * Created by bartu on 24/02/2019.
  */
 
-import java.io.*;
 import java.util.*;
 
 public class Main {
@@ -12,6 +11,7 @@ public class Main {
         Rankings r = new Rankings();
 
         r.readFile();
+
 //        String csvFile = "../tennis_atp/atp_matches_2018.csv";
 //        BufferedReader br = null;
 //        String line = "";
