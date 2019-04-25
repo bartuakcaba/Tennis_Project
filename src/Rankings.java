@@ -17,8 +17,9 @@ public class Rankings {
 
     private HashMap<Player, Double[]> rankings;
     private Glicko2 rater;
-    Map<String, Integer> matchWinWeights = getWinWeights();
-    Map<String, Integer> tournyWeigths = getTourneyWeights();
+    Map<String, Double> matchWinWeights = getWinWeights();
+    Map<String, Double> tournyWeigths = getTourneyWeights();
+    Map<String, Double> tournySize = getTournySize();
 
 
     public Rankings() {
@@ -27,7 +28,7 @@ public class Rankings {
     }
 
     //Here we need to read and create ranking for all players
-    //At some point you need to add code to be ablet o create new entries for players
+    //At some point you need to add code to be able to create new entries for players
 
     public void readFile() {
         String csvFile = "match_data/atp_matches_2018.csv";
@@ -45,20 +46,23 @@ public class Rankings {
             br.readLine();
             //We do not know the first week so we want to start with empty
             String currDate = "";
-            int i = 1;
+
+
             while ((line = br.readLine()) != null) {
 
                 // use comma as separator
                 String[] entry = line.split(cvsSplitBy);
 
+
                 //If date has changed we need to update ratings
                 //We need to also reset opponents & scores tables
+
+
 
 
                 if (currDate.equals("")) {
                     currDate = entry[5];
                 } else if (!currDate.equals(entry[5])) {
-                    System.out.println(entry[5]);
                     updateRatings(opponents, scores);
                     for (Map.Entry<Player, Double[]> playerEntry : rankings.entrySet()) {
                         Player player = playerEntry.getKey();
@@ -95,7 +99,8 @@ public class Rankings {
                 }
 
 
-                double score = calculateScore(entry[27]);
+                double score = calculateScore(entry[27], entry[29])*tournyWeigths.get(entry[4])*tournySize.get(entry[3]);
+
 
                 //Fill hashmaps of winning player
                 List<Double[]> winningPlayerOpponents = opponents.get(winningPlayer);
@@ -111,14 +116,13 @@ public class Rankings {
                 losingPlayerOpponents.add(rankings.get(winningPlayer));
                 opponents.put(losingPlayer, losingPlayerOpponents);
                 List<Double> losingPlayerScores = scores.get(losingPlayer);
-                losingPlayerScores.add(1-score);
+                losingPlayerScores.add(-score);
                 scores.put(losingPlayer, losingPlayerScores);
 
             }
 
             List<Player> players = getPlayers();
 
-//            Collections.sort(players, new SortByRating());
             writeToExcel(players);
 
         } catch (FileNotFoundException e) {
@@ -137,13 +141,20 @@ public class Rankings {
     }
 
     //TODO This scoring is going to be the main part
-    private double calculateScore(String s) {
+    private double calculateScore(String s, String tournament) {
         int count = StringUtils.countMatches(s, "-");
-        return count == 2 ? 1.0 : 0.75;
+
+        if (tournament == "G") {
+            return count == 3 ? 1.0 : 0.75;
+        } else {
+            return count == 2 ? 1.0 : 0.75;
+        }
+
     }
 
     private void updateRatings(HashMap<Player, List<Double[]>> opponents, HashMap<Player, List<Double>> scores) {
         writeToExcel2(opponents);
+        scores = normaliseRankings(scores);
 
         for(Map.Entry<Player, Double[]> rivals : rankings.entrySet()) {
             Double[] convertedRatings = rater.convertGlicko2(rivals.getValue());
@@ -233,39 +244,82 @@ public class Rankings {
 
     }
 
-    class SortByRating implements Comparator<Player>
-    {
-        // Used for sorting in ascending order of
-        // roll number
-        public int compare(Player a, Player b)
-        {
-            return Double.compare(a.getRating()[0], b.getRating()[0]);
+    private Map<String, Double> getWinWeights() {
+        Map<String, Double> map = new HashMap<>();
+
+        map.put("RR", 1.0);
+        map.put("R128", 1.0);
+        map.put("R64", 2.0);
+        map.put("R32", 4.0);
+        map.put("R16", 8.0);
+        map.put("QF", 16.0);
+        map.put("SF", 32.0);
+        map.put("F", 64.0);
+
+        return map;
+    }
+
+    private Map<String, Double> getTourneyWeights() {
+        Map<String, Double> map = new HashMap<>();
+
+        map.put("D", 1.0);
+        map.put("A", 2.0);
+        map.put("M", 4.0);
+        map.put("G", 8.0);
+        return map;
+    }
+
+    private Map<String, Double> getTournySize() {
+        Map<String, Double> map = new HashMap<>();
+
+        map.put("4", 1.0);
+        map.put("32", 2.0);
+        map.put("64", 4.0);
+        map.put("128", 8.0);
+        return map;
+    }
+
+    private HashMap<Player, List<Double>> normaliseRankings(HashMap<Player, List<Double>> scores) {
+
+        Double maxScore = 0.0;
+        Double minScore = Double.MAX_VALUE;
+
+        for(Map.Entry<Player, List<Double>> entry : scores.entrySet()) {
+
+            if (entry.getValue().isEmpty()) {
+                continue;
+            }
+
+            if (Collections.max(entry.getValue()) > maxScore) {
+                maxScore = Collections.max(entry.getValue());
+            }
+
+            if (Collections.min(entry.getValue()) < minScore) {
+                minScore = Collections.min(entry.getValue());
+            }
         }
+
+        for(Map.Entry<Player, List<Double>> entry : scores.entrySet()) {
+
+            for (int i =0; i < entry.getValue().size(); i++) {
+                Double d = entry.getValue().get(i);
+
+                //Case for loser's score
+                if (d < 0) {
+                    d = -d;
+                    d = (d-minScore) / (maxScore-minScore);
+                    entry.getValue().set(i, 1-d);
+                    continue;
+                }
+                d = (d-minScore) / (maxScore-minScore);
+                entry.getValue().set(i, d);
+            }
+        }
+
+        return  scores;
+
     }
 
-    static Map<String, Integer> getWinWeights() {
-        Map<String, Integer> map = new HashMap<>();
 
-        map.put("RR", 5);
-        map.put("R128", 5);
-        map.put("R64", 10);
-        map.put("R32", 15);
-        map.put("R16", 30);
-        map.put("QF", 50);
-        map.put("SF", 75);
-        map.put("F", 100);
-
-        return map;
-    }
-
-    static Map<String, Integer> getTourneyWeights() {
-        Map<String, Integer> map = new HashMap<>();
-
-        map.put("D", 1);
-        map.put("A", 2);
-        map.put("M", 4);
-        map.put("G", 8);
-        return map;
-    }
 
 }
