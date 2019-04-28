@@ -161,8 +161,11 @@ public class Glicko2 {
     public Double[] updateUnplayedPlayer(Double[] rating) {
 
         double oldRD = rating[1];
+        double oldRating = rating[0];
 
         rating[1] = Math.sqrt(Math.pow(oldRD,2) + Math.pow(rating[2],2));
+        //Need to decay ratings
+//        rating[0] = oldRating *0.99;
 
         return rating;
 

@@ -16,28 +16,31 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class Rankings {
 
     private HashMap<Player, Double[]> rankings;
+    private HashMap<Player, List<Double[]>> opponents = new HashMap<>();
+    private HashMap<Player, List<Double>> scores = new HashMap<>();
     private Glicko2 rater;
+    private Predictor predictor;
     Map<String, Double> matchWinWeights = getWinWeights();
+    Map<String, Double> matchLossWeights = getLossWeights();
     Map<String, Double> tournyWeigths = getTourneyWeights();
     Map<String, Double> tournySize = getTournySize();
 
 
-    public Rankings() {
+
+    public Rankings(Predictor predictor) {
         rankings = new HashMap<>();
         rater = new Glicko2();
+        this.predictor = predictor;
     }
 
     //Here we need to read and create ranking for all players
     //At some point you need to add code to be able to create new entries for players
 
-    public void readFile() {
-        String csvFile = "match_data/atp_matches_2018.csv";
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
+    public void readData(String csvFile, boolean predictFlag) {
 
-        HashMap<Player, List<Double[]>> opponents = new HashMap<>();
-        HashMap<Player, List<Double>> scores = new HashMap<>();
+        BufferedReader br = null;
+        String line;
+        String cvsSplitBy = ",";
 
         try {
 
@@ -53,13 +56,13 @@ public class Rankings {
                 // use comma as separator
                 String[] entry = line.split(cvsSplitBy);
 
+                if (entry[4].equals("D")) {
+                    continue;
+                }
+
 
                 //If date has changed we need to update ratings
                 //We need to also reset opponents & scores tables
-
-
-
-
                 if (currDate.equals("")) {
                     currDate = entry[5];
                 } else if (!currDate.equals(entry[5])) {
@@ -98,16 +101,21 @@ public class Rankings {
                     scores.put(losingPlayer, new LinkedList<>());
                 }
 
+                double score = calculateScore(entry[27], entry[4]);
+                double winnerScore = score*tournyWeigths.get(entry[4])*tournySize.get(entry[3]);
+                double loserScore = (1-score)*tournyWeigths.get(entry[4])*tournySize.get(entry[3]);
 
-                double score = calculateScore(entry[27], entry[29])*tournyWeigths.get(entry[4])*tournySize.get(entry[3]);
-
+                //Increment the predict counter if flag is in
+                if(predictFlag) {
+                    predictor.predictSingleMatch(rankings.get(winningPlayer), rankings.get(losingPlayer));
+                }
 
                 //Fill hashmaps of winning player
                 List<Double[]> winningPlayerOpponents = opponents.get(winningPlayer);
                 winningPlayerOpponents.add(rankings.get(losingPlayer));
                 opponents.put(winningPlayer, winningPlayerOpponents);
                 List<Double> winningPlayerScores = scores.get(winningPlayer);
-                winningPlayerScores.add(score);
+                winningPlayerScores.add(winnerScore);
                 scores.put(winningPlayer, winningPlayerScores);
 
 
@@ -116,7 +124,7 @@ public class Rankings {
                 losingPlayerOpponents.add(rankings.get(winningPlayer));
                 opponents.put(losingPlayer, losingPlayerOpponents);
                 List<Double> losingPlayerScores = scores.get(losingPlayer);
-                losingPlayerScores.add(-score);
+                losingPlayerScores.add(loserScore);
                 scores.put(losingPlayer, losingPlayerScores);
 
             }
@@ -249,12 +257,27 @@ public class Rankings {
 
         map.put("RR", 1.0);
         map.put("R128", 1.0);
-        map.put("R64", 2.0);
-        map.put("R32", 4.0);
-        map.put("R16", 8.0);
-        map.put("QF", 16.0);
-        map.put("SF", 32.0);
-        map.put("F", 64.0);
+        map.put("R64", 1.1);
+        map.put("R32", 1.2);
+        map.put("R16", 1.3);
+        map.put("QF", 1.5);
+        map.put("SF", 1.75);
+        map.put("F", 2.0);
+
+        return map;
+    }
+
+    private Map<String, Double> getLossWeights() {
+        Map<String, Double> map = new HashMap<>();
+
+        map.put("RR", 0.5);
+        map.put("R128", 0.5);
+        map.put("R64", 0.5);
+        map.put("R32", 0.6);
+        map.put("R16", 0.70);
+        map.put("QF", 0.80);
+        map.put("SF", 0.90);
+        map.put("F", 1.0);
 
         return map;
     }
@@ -263,9 +286,11 @@ public class Rankings {
         Map<String, Double> map = new HashMap<>();
 
         map.put("D", 1.0);
-        map.put("A", 2.0);
-        map.put("M", 4.0);
-        map.put("G", 8.0);
+        map.put("A", 1.25);
+        map.put("M", 1.50);
+        map.put("C", 1.50);
+        map.put("F", 1.50);
+        map.put("G", 2.0);
         return map;
     }
 
@@ -273,9 +298,16 @@ public class Rankings {
         Map<String, Double> map = new HashMap<>();
 
         map.put("4", 1.0);
-        map.put("32", 2.0);
-        map.put("64", 4.0);
-        map.put("128", 8.0);
+        //Special case for ATP Finals
+        map.put("8", 2.0);
+        map.put("16", 2.0);
+        map.put("28", 1.0);
+        map.put("32", 1.0);
+        map.put("48", 1.0);
+        map.put("56", 1.25);
+        map.put("64", 1.25);
+        map.put("96", 1.45);
+        map.put("128", 1.50);
         return map;
     }
 
@@ -303,14 +335,6 @@ public class Rankings {
 
             for (int i =0; i < entry.getValue().size(); i++) {
                 Double d = entry.getValue().get(i);
-
-                //Case for loser's score
-                if (d < 0) {
-                    d = -d;
-                    d = (d-minScore) / (maxScore-minScore);
-                    entry.getValue().set(i, 1-d);
-                    continue;
-                }
                 d = (d-minScore) / (maxScore-minScore);
                 entry.getValue().set(i, d);
             }
@@ -320,6 +344,7 @@ public class Rankings {
 
     }
 
-
-
+    public HashMap<Player, Double[]> getRankings() {
+        return rankings;
+    }
 }
