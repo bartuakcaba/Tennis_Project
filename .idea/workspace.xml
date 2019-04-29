@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e4ec3ed-74aa-44da-859c-80111c312bf9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/DBHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Tennis_Project/Main.class" afterPath="$PROJECT_DIR$/out/production/Tennis_Project/Main.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sqlite/tennis.db" afterPath="$PROJECT_DIR$/sqlite/tennis.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tennis_Project.iml" afterPath="$PROJECT_DIR$/Tennis_Project.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DBHandler.java" afterPath="$PROJECT_DIR$/src/DBHandler.java" />
     </list>
     <ignored path="Tennis_Project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -82,8 +80,8 @@
       <file leaf-file-name="DBHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DBHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.24758221">
-              <caret line="93" column="59" selection-start-line="93" selection-start-column="59" selection-end-line="93" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.44874275">
+              <caret line="119" column="51" selection-start-line="119" selection-start-column="45" selection-end-line="119" selection-end-column="51" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -510,7 +508,19 @@
       <option name="project" value="LOCAL" />
       <updated>1556483887582</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Trying to save H2H into db&#10;">
+      <created>1556557930891</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1556557930891</updated>
+    </task>
+    <task id="LOCAL-00008" summary="The database">
+      <created>1556558094341</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1556558094341</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -551,7 +561,9 @@
     <MESSAGE value="Fix scale of ratings&#10;" />
     <MESSAGE value="Remove match level weighting" />
     <MESSAGE value="Add predictor&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add predictor&#10;" />
+    <MESSAGE value="Trying to save H2H into db&#10;" />
+    <MESSAGE value="The database" />
+    <option name="LAST_COMMIT_MESSAGE" value="The database" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -745,10 +757,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/DBHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.24758221">
-          <caret line="93" column="59" selection-start-line="93" selection-start-column="59" selection-end-line="93" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.44874275">
+          <caret line="119" column="51" selection-start-line="119" selection-start-column="45" selection-end-line="119" selection-end-column="51" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
