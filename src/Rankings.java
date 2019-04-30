@@ -36,11 +36,12 @@ public class Rankings {
     //Here we need to read and create ranking for all players
     //At some point you need to add code to be able to create new entries for players
 
-    public void readData(String csvFile, boolean predictFlag) {
+    public void readData(int year, boolean predictFlag) {
 
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ",";
+        String csvFile = "match_data/atp_matches_" + Integer.toString(year) + ".csv";
 
         try {
 
@@ -56,7 +57,8 @@ public class Rankings {
                 // use comma as separator
                 String[] entry = line.split(cvsSplitBy);
 
-                if (entry[4].equals("D")) {
+                //Davis Cup, ATP Tour Challanger Skip
+                if (entry.length == 0 || entry[4].equals("D") || entry[3].equals("9")) {
                     continue;
                 }
 
@@ -102,8 +104,9 @@ public class Rankings {
                 }
 
                 double score = calculateScore(entry[27], entry[4]);
-                double winnerScore = score*tournyWeigths.get(entry[4])*tournySize.get(entry[3]);
-                double loserScore = (1-score)*tournyWeigths.get(entry[4])*tournySize.get(entry[3]);
+                score = calculateScoreGamewise(entry[27]);
+                double winnerScore = score*tournySize.get(entry[3]);
+                double loserScore = (1-score)*tournySize.get(entry[3]);
 
                 //Increment the predict counter if flag is in
                 if(predictFlag) {
@@ -158,6 +161,37 @@ public class Rankings {
             return count == 2 ? 1.0 : 0.75;
         }
 
+    }
+
+    private double calculateScoreGamewise(String scoreline) {
+        String[] sets = scoreline.split("\\s+");
+
+        double winnerScore = 0;
+        double loserScore = 0;
+
+        if (scoreline.equals("W/O")) {
+            winnerScore = 1;
+            return winnerScore;
+        }
+
+        for (String set :  sets) {
+
+            if (set.equals("RET")) {
+                break;
+            }
+
+            String[] arr = set.split("-");
+
+            winnerScore += Double.parseDouble(arr[0]);
+
+            //Need to check if it is a tiebreak set
+            loserScore += Integer.parseInt(arr[1].split("\\(")[0]);
+
+        }
+
+        double toReturn = winnerScore / (winnerScore+loserScore);
+
+        return (toReturn + 0.2) > 1.0 ? 1.0 : toReturn + 0.2;
     }
 
     private void updateRatings(HashMap<Player, List<Double[]>> opponents, HashMap<Player, List<Double>> scores) {

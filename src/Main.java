@@ -6,31 +6,19 @@ public class Main {
 
     public static void main(String[] args) {
 
-        DBHandler dbHandler = new DBHandler();
+        Predictor p = new Predictor();
+        int year = 2017;
 
-        int year = 1990;
+        Rankings r = new Rankings(p);
 
-        while (year < 2019) {
-            System.out.println(year);
-            dbHandler.fillH2HTable(year);
+        while (year < 2018) {
+            r.readData(year, false);
             year++;
         }
 
+        r.readData(year, true);
 
-//        Predictor p = new Predictor();
-//        int year = 1992;
-//        String csvFile = "match_data/atp_matches_" + Integer.toString(year) + ".csv";
-//
-//        Rankings r = new Rankings(p);
-//
-//        while (year < 2018) {
-//            r.readData(csvFile, false);
-//            year++;
-//        }
-//
-//        r.readData(csvFile, true);
-//
-//        System.out.print(p.calculateAccuracy());
+        System.out.print(p.calculateAccuracy());
 
     }
 }
