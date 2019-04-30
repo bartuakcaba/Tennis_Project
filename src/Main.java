@@ -8,7 +8,15 @@ public class Main {
 
         DBHandler dbHandler = new DBHandler();
 
-        dbHandler.fillH2HTable();
+        int year = 1990;
+
+        while (year < 2019) {
+            System.out.println(year);
+            dbHandler.fillH2HTable(year);
+            year++;
+        }
+
+
 //        Predictor p = new Predictor();
 //        int year = 1992;
 //        String csvFile = "match_data/atp_matches_" + Integer.toString(year) + ".csv";

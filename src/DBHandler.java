@@ -56,8 +56,7 @@ public class DBHandler {
         }
     }
 
-    public void fillH2HTable() {
-        int year = 1992;
+    public void fillH2HTable(int year) {
         String csvFile = "match_data/atp_matches_" + Integer.toString(year) + ".csv";
         BufferedReader br = null;
         String line;
@@ -78,20 +77,23 @@ public class DBHandler {
                 while ((line = br.readLine()) != null) {
                     String[] entry = line.split(cvsSplitBy);
 
-                    String winningPlayer = entry[10].replaceAll("\\s+","");
-                    String losingPlayer = entry[20].replaceAll("\\s+","");
+                    //At the olympics there is an entry every other line
+                    if (entry.length == 0) {
+                        continue;
+                    }
+
+                    String winningPlayer = entry[10].replaceAll("\\s+", "");
+                    String losingPlayer = entry[20].replaceAll("\\s+", "");
 
 
-                    if (winningPlayer.compareTo(losingPlayer) > 0) {
+                    if (winningPlayer.compareTo(losingPlayer) < 0) {
                         String searchQuery = "SELECT P1_Score, P2_Score " +
                                 "from " + "Head_To_Head " +
                                 "where " + "Player1 = ? AND Player2 = ?";
-                        PreparedStatement pstmt  = conn.prepareStatement(searchQuery);
+                        PreparedStatement pstmt = conn.prepareStatement(searchQuery);
 
                         pstmt.setString(1, winningPlayer);
                         pstmt.setString(2, losingPlayer);
-
-                        System.out.println(pstmt.toString());
 
                         ResultSet rs = pstmt.executeQuery();
 
@@ -99,32 +101,42 @@ public class DBHandler {
                         if (!rs.isBeforeFirst()) {
                             stmt.executeUpdate("INSERT INTO Head_To_Head " + "VALUES ('" + winningPlayer + "', '" + losingPlayer + "', 1, 0);");
                         } else {
-                            int p1Score = rs.getInt("P1_Score");
+                            int p1Score = rs.getInt("P1_Score") + 1;
                             int p2Score = rs.getInt("P2_Score");
-                            stmt.executeUpdate("INSERT INTO Head_To_Head " + "VALUES ('" + winningPlayer + "', '" + losingPlayer + "', "
-                                    + ++p1Score + ", " + p2Score + ");");
+                            String updateQuery = "UPDATE Head_To_Head SET P1_Score = ?, P2_Score = ? WHERE Player1 = ? AND Player2 = ?";
+                            PreparedStatement preparedStmt = conn.prepareStatement(updateQuery);
+                            preparedStmt.setInt(1, p1Score);
+                            preparedStmt.setInt(2, p2Score);
+                            preparedStmt.setString(3, winningPlayer);
+                            preparedStmt.setString(4, losingPlayer);
+
+                            preparedStmt.executeUpdate();
                         }
                     } else {
                         String searchQuery = "SELECT P1_Score, P2_Score " +
                                 "from " + "Head_To_Head " +
                                 "where " + "Player1 = ? AND Player2 = ?";
-                        PreparedStatement pstmt  = conn.prepareStatement(searchQuery);
+                        PreparedStatement pstmt = conn.prepareStatement(searchQuery);
 
                         pstmt.setString(1, losingPlayer);
                         pstmt.setString(2, winningPlayer);
-
-                        System.out.println(winningPlayer.toString());
 
                         ResultSet rs = pstmt.executeQuery();
 
                         //Means they haven't played before so we need to insert
                         if (!rs.isBeforeFirst()) {
-                            stmt.executeUpdate("INSERT INTO Head_To_Head " + "VALUES ('"+ losingPlayer + "', '" + winningPlayer + "', 0, 1);");
+                            stmt.executeUpdate("INSERT INTO Head_To_Head " + "VALUES ('" + losingPlayer + "', '" + winningPlayer + "', 0, 1);");
                         } else {
                             int p1Score = rs.getInt("P1_Score");
-                            int p2Score = rs.getInt("P2_Score");
-                            stmt.executeUpdate("INSERT INTO Head_To_Head " + "VALUES ('" + winningPlayer + "', '" + losingPlayer + "', "
-                                    + p1Score + ", " + ++p2Score + ");");
+                            int p2Score = rs.getInt("P2_Score") + 1;
+                            String updateQuery = "UPDATE Head_To_Head SET P1_Score = ?, P2_Score = ? WHERE Player1 = ? AND Player2 = ?";
+                            PreparedStatement preparedStmt = conn.prepareStatement(updateQuery);
+                            preparedStmt.setInt(1, p1Score);
+                            preparedStmt.setInt(2, p2Score);
+                            preparedStmt.setString(3, losingPlayer);
+                            preparedStmt.setString(4, winningPlayer);
+
+                            preparedStmt.executeUpdate();
                         }
                     }
                 }
@@ -158,4 +170,5 @@ public class DBHandler {
             }
 
         }
+
 }
