@@ -105,14 +105,11 @@ public class Rankings {
                 }
 
                 double score = scoreCalculator.calcGameNormalised(entry[27]);
-                double winnerScore = score*matchWinWeights.get(entry[29]);
-                double loserScore = (1-score)*matchLossWeights.get(entry[29]);
+                double winnerScore = score;
+                double loserScore = (1-score);
 
-                winnerScore = (winnerScore / (loserScore+winnerScore));
-                loserScore =1 - winnerScore;
-
-                winnerScore *= tournyWeigths.get(entry[4]);
-                loserScore *= tournyWeigths.get(entry[4]);
+//                winnerScore = (winnerScore / (loserScore+winnerScore));
+//                loserScore =1 - winnerScore;
 
 
                 //Increment the predict counter if flag is in
@@ -160,7 +157,7 @@ public class Rankings {
 
     private void updateRatings(HashMap<Player, List<Double[]>> opponents, HashMap<Player, List<Double>> scores) {
         writeToExcel2(opponents);
-        scores = normaliseRankings(scores);
+//        scores = normaliseRankings(scores);
 
         for(Map.Entry<Player, Double[]> rivals : rankings.entrySet()) {
             Double[] convertedRatings = rater.convertGlicko2(rivals.getValue());

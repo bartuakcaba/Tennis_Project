@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
 
         Predictor p = new Predictor();
-        int year = 2017;
+        int year = 2011;
 
         Rankings r = new Rankings(p);
 

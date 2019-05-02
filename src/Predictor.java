@@ -5,10 +5,12 @@ public class Predictor {
 
     private int correctGuesses;
     private int allGuesses;
+    private DBHandler dbHandler;
 
     public Predictor() {
         correctGuesses = 0;
         allGuesses = 0;
+        dbHandler = new DBHandler();
     }
 
 

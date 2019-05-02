@@ -54,14 +54,18 @@ public class ScoreCalculator {
         double loserScore = 0;
 
 
-        if (scoreline.equals("W/O")) {
+        if (scoreline.contains("W/O") || scoreline.equals(" RET") || scoreline.contains("Jun") || scoreline.isEmpty()) {
             winnerScore = 1;
             return winnerScore;
         }
 
         for (String set :  sets) {
 
-            if (set.equals("RET")) {
+            if (set.contains("RET") || set.contains("DEF")) {
+                break;
+            }
+
+            if (set.contains("Played and abandoned")) {
                 break;
             }
 

@@ -81,7 +81,7 @@ public class Glicko2 {
             B = Math.log(Math.pow(estImprovement, 2) - Math.pow(RD, 2) - V);
         } else  {
             int k = 1;
-            while (volatilityUtility(a, (a-k*SYS_CONSTANT), RD, estImprovement, V) <= 0) {
+            while (volatilityUtility(a, (a-k*SYS_CONSTANT), RD, estImprovement, V) < 0) {
                 k++;
             }
             B = a - k*SYS_CONSTANT;
