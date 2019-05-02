@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.*;
-import java.util.function.DoubleBinaryOperator;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,8 +16,10 @@ public class Rankings {
     private HashMap<Player, Double[]> rankings;
     private HashMap<Player, List<Double[]>> opponents = new HashMap<>();
     private HashMap<Player, List<Double>> scores = new HashMap<>();
+
     private Glicko2 rater;
     private Predictor predictor;
+    private ScoreCalculator scoreCalculator;
     Map<String, Double> matchWinWeights = getWinWeights();
     Map<String, Double> matchLossWeights = getLossWeights();
     Map<String, Double> tournyWeigths = getTourneyWeights();
@@ -29,8 +29,9 @@ public class Rankings {
 
     public Rankings(Predictor predictor) {
         rankings = new HashMap<>();
-        rater = new Glicko2();
+        this.rater = new Glicko2();
         this.predictor = predictor;
+        this.scoreCalculator = new ScoreCalculator();
     }
 
     //Here we need to read and create ranking for all players
@@ -103,10 +104,16 @@ public class Rankings {
                     scores.put(losingPlayer, new LinkedList<>());
                 }
 
-                double score = calculateScore(entry[27], entry[4]);
-                score = calculateScoreGamewise(entry[27]);
-                double winnerScore = score*tournySize.get(entry[3]);
-                double loserScore = (1-score)*tournySize.get(entry[3]);
+                double score = scoreCalculator.calcGameNormalised(entry[27]);
+                double winnerScore = score*matchWinWeights.get(entry[29]);
+                double loserScore = (1-score)*matchLossWeights.get(entry[29]);
+
+                winnerScore = (winnerScore / (loserScore+winnerScore));
+                loserScore =1 - winnerScore;
+
+                winnerScore *= tournyWeigths.get(entry[4]);
+                loserScore *= tournyWeigths.get(entry[4]);
+
 
                 //Increment the predict counter if flag is in
                 if(predictFlag) {
@@ -149,49 +156,6 @@ public class Rankings {
                 }
             }
         }
-    }
-
-    //TODO This scoring is going to be the main part
-    private double calculateScore(String s, String tournament) {
-        int count = StringUtils.countMatches(s, "-");
-
-        if (tournament == "G") {
-            return count == 3 ? 1.0 : 0.75;
-        } else {
-            return count == 2 ? 1.0 : 0.75;
-        }
-
-    }
-
-    private double calculateScoreGamewise(String scoreline) {
-        String[] sets = scoreline.split("\\s+");
-
-        double winnerScore = 0;
-        double loserScore = 0;
-
-        if (scoreline.equals("W/O")) {
-            winnerScore = 1;
-            return winnerScore;
-        }
-
-        for (String set :  sets) {
-
-            if (set.equals("RET")) {
-                break;
-            }
-
-            String[] arr = set.split("-");
-
-            winnerScore += Double.parseDouble(arr[0]);
-
-            //Need to check if it is a tiebreak set
-            loserScore += Integer.parseInt(arr[1].split("\\(")[0]);
-
-        }
-
-        double toReturn = winnerScore / (winnerScore+loserScore);
-
-        return (toReturn + 0.2) > 1.0 ? 1.0 : toReturn + 0.2;
     }
 
     private void updateRatings(HashMap<Player, List<Double[]>> opponents, HashMap<Player, List<Double>> scores) {
@@ -291,12 +255,12 @@ public class Rankings {
 
         map.put("RR", 1.0);
         map.put("R128", 1.0);
-        map.put("R64", 1.1);
-        map.put("R32", 1.2);
-        map.put("R16", 1.3);
-        map.put("QF", 1.5);
-        map.put("SF", 1.75);
-        map.put("F", 2.0);
+        map.put("R64", 1.20);
+        map.put("R32", 1.50);
+        map.put("R16", 2.0);
+        map.put("QF", 2.50);
+        map.put("SF", 3.0);
+        map.put("F", 4.0);
 
         return map;
     }
@@ -320,11 +284,11 @@ public class Rankings {
         Map<String, Double> map = new HashMap<>();
 
         map.put("D", 1.0);
-        map.put("A", 1.25);
-        map.put("M", 1.50);
-        map.put("C", 1.50);
-        map.put("F", 1.50);
-        map.put("G", 2.0);
+        map.put("A", 1.50);
+        map.put("M", 2.0);
+        map.put("C", 2.0);
+        map.put("F", 2.0);
+        map.put("G", 4.0);
         return map;
     }
 
@@ -333,15 +297,15 @@ public class Rankings {
 
         map.put("4", 1.0);
         //Special case for ATP Finals
-        map.put("8", 2.0);
-        map.put("16", 2.0);
+        map.put("8", 4.0);
+        map.put("16", 3.0);
         map.put("28", 1.0);
-        map.put("32", 1.0);
-        map.put("48", 1.0);
-        map.put("56", 1.25);
-        map.put("64", 1.25);
-        map.put("96", 1.45);
-        map.put("128", 1.50);
+        map.put("32", 1.50);
+        map.put("48", 2.0);
+        map.put("56", 2.0);
+        map.put("64", 2.0);
+        map.put("96", 2.0);
+        map.put("128", 3.0);
         return map;
     }
 
