@@ -63,7 +63,6 @@ public class Glicko2 {
         int i = 0;
 
         for (Double[] arr : rivalRatings) {
-
             sum += (calcG(arr[1]) * (results.get(i) - calcE(rating[0],arr[0],arr[1])));
             i++;
         }
@@ -134,7 +133,7 @@ public class Glicko2 {
 
         for (Double[] arr : rivalRatings) {
 
-            sum += (calcG(arr[1]) * (results.get(i) - calcE(rating[0],arr[0],arr[1])));
+            sum += (calcG(arr[1]) * (results.get(i) - calcE(oldRating,arr[0],arr[1])));
             i++;
         }
 
@@ -156,7 +155,7 @@ public class Glicko2 {
     }
 
 
-    //If player hasn't played this week then we only update RD (it increases via)
+    //If player hasn't played this week then we only update RD
 
     public Double[] updateUnplayedPlayer(Double[] rating) {
 

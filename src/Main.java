@@ -7,9 +7,9 @@ public class Main {
     public static void main(String[] args) {
 
         Predictor p = new Predictor();
-        int year = 2011;
+        int year = 2017;
 
-        Rankings r = new Rankings(p);
+        FileReader r = new FileReader(p);
 
         while (year < 2018) {
             r.readData(year, false);

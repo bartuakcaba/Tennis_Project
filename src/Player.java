@@ -9,6 +9,9 @@ public class Player {
     private String name;
     private String country;
     private Double[] rating;
+    private Double[] clayRating;
+    private Double[] grassRating;
+    private Double[] hardRating;
 
     public Player(int id, String name, String country) {
         this.id = id;
@@ -38,6 +41,30 @@ public class Player {
 
     public void setRating(Double[] rating) {
         this.rating = rating;
+    }
+
+    public Double[] getClayRating() {
+        return clayRating;
+    }
+
+    public void setClayRating(Double[] clayRating) {
+        this.clayRating = clayRating;
+    }
+
+    public Double[] getGrassRating() {
+        return grassRating;
+    }
+
+    public void setGrassRating(Double[] grassRating) {
+        this.grassRating = grassRating;
+    }
+
+    public Double[] getHardRating() {
+        return hardRating;
+    }
+
+    public void setHardRating(Double[] hardRating) {
+        this.hardRating = hardRating;
     }
 
     @Override
