@@ -1,9 +1,3 @@
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import java.io.FileOutputStream;
 import java.util.*;
 
 /**
@@ -17,12 +11,14 @@ public class Ratings {
     private HashMap<Player, List<Double>> scores;
 
     private Glicko2 rater;
+    private CSVWriter writer;
 
     public Ratings() {
         rankings = new HashMap<>();
         opponents = new HashMap<>();
         scores = new HashMap<>();
         rater = new Glicko2();
+        writer = new CSVWriter();
     }
 
     public void updateRatings() {
@@ -64,56 +60,11 @@ public class Ratings {
     }
 
     public void writeToExcel() {
-
-        Set<Player> players = rankings.keySet();
-        try {
-            Workbook workbook = new HSSFWorkbook();
-            Sheet sheet = workbook.createSheet("new sheet");
-
-            int i = 0;
-            for (Player player : players) {
-                Double[] ranking = rankings.get(player);
-                Row row = sheet.createRow(i);
-                row.createCell(1).setCellValue(player.getName());
-                row.createCell(2).setCellValue(ranking[0]);
-                row.createCell(3).setCellValue(ranking[1]);
-                row.createCell(4).setCellValue(ranking[2]);
-                i++;
-            }
-
-            FileOutputStream fileOut = new FileOutputStream("ratings.xls");
-            workbook.write(fileOut);
-            fileOut.close();
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
-        }
-
+        writer.writeRatings(rankings);
     }
 
     private void writeToExcel2(Map<Player, List<Double[]>> opponents) {
-        try {
-            Workbook workbook = new HSSFWorkbook();
-            Sheet sheet = workbook.createSheet("new sheet");
-
-            int i = 0;
-            for (Map.Entry<Player, List<Double[]>> entry : opponents.entrySet()) {
-                Row row = sheet.createRow(i);
-                row.createCell(1).setCellValue(entry.getKey().getName());
-                int j = 2;
-                for (Double[] player : entry.getValue()) {
-                    row.createCell(j).setCellValue(player[0]);
-                    j++;
-                }
-                i++;
-            }
-
-            FileOutputStream fileOut = new FileOutputStream("opponents.xls");
-            workbook.write(fileOut);
-            fileOut.close();
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
-        }
-
+        writer.writeOpponents(opponents);
     }
 
     public void clearMaps() {

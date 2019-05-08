@@ -5,6 +5,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
 
 
 /**
@@ -12,7 +16,6 @@ import org.apache.poi.ss.usermodel.Workbook;
  */
 
 public class FileReader {
-
 
     Ratings ratings;
     Ratings clayRatings;
@@ -44,6 +47,7 @@ public class FileReader {
 
     public void readData(int year, boolean predictFlag) {
 
+
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ",";
@@ -56,6 +60,7 @@ public class FileReader {
             br.readLine();
             //We do not know the first week so we want to start with empty
             String currDate = "";
+
 
             while ((line = br.readLine()) != null) {
 
@@ -95,30 +100,48 @@ public class FileReader {
                 double winnerScore = score;
                 double loserScore = (1-score);
 
-//                winnerScore = (winnerScore / (loserScore+winnerScore));
-//                loserScore =1 - winnerScore;
+                winnerScore = (winnerScore / (loserScore+winnerScore));
+                loserScore =1 - winnerScore;
 
 
                 //Increment the predict counter if flag is in
                 if(predictFlag) {
-                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
+//                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
+                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
-
-//                    if (surface.equals("Clay")) {
-//                        predictor.predictSingleMatch(clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer));
-//                    } else if (surface.equals("Grass")) {
-//                        predictor.predictSingleMatch(grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer));
-//                    } else {
-//                        //only other surface is hard
-//                        predictor.predictSingleMatch(hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer));
-//                    }
+                    if (surface.equals("Clay")) {
+                        predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer));
+                    } else if (surface.equals("Grass")) {
+                        predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer));
+                    } else {
+                        predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer));
+                    }
+                } else {
+                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
                 }
 
                 ratings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
+
+
+                if (surface.equals("Clay")) {
+                    clayRatings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
+                } else if (surface.equals("Grass")) {
+                    grassRatings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
+                } else {
+                    //only other surface is hard
+                    hardRatings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
+                }
+
             }
 
             //Final ratings update
             ratings.updateRatings();
+            clayRatings.updateRatings();
+            grassRatings.updateRatings();
+            hardRatings.updateRatings();
 
             ratings.writeToExcel();
 

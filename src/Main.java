@@ -1,10 +1,12 @@
+import weka.classifiers.Classifier;
+
 /**
  * Created by bartu on 24/02/2019.
  */
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         Predictor p = new Predictor();
         int year = 2017;
@@ -16,7 +18,11 @@ public class Main {
             year++;
         }
 
+        Classifier cls = p.trainClassifier();
+
         r.readData(year, true);
+        p.eval(cls);
+
 
         System.out.print(p.calculateAccuracy());
 
