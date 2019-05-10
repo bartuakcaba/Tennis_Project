@@ -59,8 +59,8 @@ public class Ratings {
 
     }
 
-    public void writeToExcel() {
-        writer.writeRatings(rankings);
+    public void writeToExcel(String filename) {
+        writer.writeRatings(rankings, filename);
     }
 
     private void writeToExcel2(Map<Player, List<Double[]>> opponents) {

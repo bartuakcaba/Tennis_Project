@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class CSVWriter {
 
-    public void writeRatings(Map<Player, Double[]> rankings) {
+    public void writeRatings(Map<Player, Double[]> rankings, String filename) {
 
         Set<Player> players = rankings.keySet();
         try {
@@ -31,7 +31,7 @@ public class CSVWriter {
                 i++;
             }
 
-            FileOutputStream fileOut = new FileOutputStream("ratings.xls");
+            FileOutputStream fileOut = new FileOutputStream(filename);
             workbook.write(fileOut);
             fileOut.close();
         } catch (Exception ioe) {

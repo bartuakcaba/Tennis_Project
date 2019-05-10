@@ -1,15 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
-import weka.core.Instances;
-
 
 /**
  * Created by bartu on 17/04/2019.
@@ -24,6 +15,7 @@ public class FileReader {
 
     private Predictor predictor;
     private ScoreCalculator scoreCalculator;
+    private DBHandler dbhandler;
 
     Map<String, Double> matchWinWeights = getWinWeights();
     Map<String, Double> matchLossWeights = getLossWeights();
@@ -40,6 +32,7 @@ public class FileReader {
 
         this.predictor = predictor;
         this.scoreCalculator = new ScoreCalculator();
+        this.dbhandler = new DBHandler();
     }
 
     //Here we need to read and create ranking for all players
@@ -78,6 +71,16 @@ public class FileReader {
                 } else if (!currDate.equals(entry[5])) {
                     ratings.updateRatings();
                     ratings.clearMaps();
+
+                    clayRatings.updateRatings();
+                    clayRatings.clearMaps();
+
+                    grassRatings.updateRatings();
+                    grassRatings.clearMaps();
+
+                    hardRatings.updateRatings();
+                    hardRatings.clearMaps();
+
                     currDate = entry[5];
                 }
 
@@ -100,27 +103,45 @@ public class FileReader {
                 double winnerScore = score;
                 double loserScore = (1-score);
 
-                winnerScore = (winnerScore / (loserScore+winnerScore));
-                loserScore =1 - winnerScore;
+//                winnerScore = (winnerScore / (loserScore+winnerScore));
+//                loserScore =1 - winnerScore;
+
+                double h2h = dbhandler.getH2H(winningPlayer, losingPlayer);
+                h2h = ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0] ? h2h : 1-h2h;
 
 
                 //Increment the predict counter if flag is in
                 if(predictFlag) {
 //                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
-                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
+//                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
                     if (surface.equals("Clay")) {
                         predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer));
+                        predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h);
                     } else if (surface.equals("Grass")) {
                         predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer));
+                        predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h);
                     } else {
                         predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer));
+                        predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h);
                     }
                 } else {
-                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
+                    if (surface.equals("Clay")) {
+                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h);
+                    } else if (surface.equals("Grass")) {
+                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h);
+                    } else {
+                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h);
+                    }
                 }
 
                 ratings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
@@ -143,7 +164,11 @@ public class FileReader {
             grassRatings.updateRatings();
             hardRatings.updateRatings();
 
-            ratings.writeToExcel();
+            ratings.writeToExcel("ratings.xls");
+            clayRatings.writeToExcel("clay_ratings.xls");
+            grassRatings.writeToExcel("grass_ratings.xls");
+            hardRatings.writeToExcel("hard_ratings.xls");
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

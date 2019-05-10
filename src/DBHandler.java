@@ -169,6 +169,58 @@ public class DBHandler {
                 }
             }
 
+    }
+
+    public double getH2H(Player winningPlayer, Player losingPlayer) {
+        String url = "jdbc:sqlite:sqlite/tennis.db";
+        Connection conn = null;
+        Statement stmt = null;
+
+        String winner = winningPlayer.getName().replaceAll("\\s+", "");
+        String loser = losingPlayer.getName().replaceAll("\\s+", "");
+
+        String searchQuery = "SELECT P1_Score, P2_Score " +
+                "from " + "Head_To_Head " +
+                "where " + "Player1 = ? AND Player2 = ?";
+
+        try  {
+            conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(searchQuery);
+
+            if (winner.compareTo(loser) < 0) {
+                pstmt.setString(1, winner);
+                pstmt.setString(2, loser);
+            } else {
+                pstmt.setString(1, loser);
+                pstmt.setString(2, winner);
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+
+            int p1Score = rs.getInt("P1_Score");
+            int p2Score = rs.getInt("P2_Score");
+
+            return p1Score / (p1Score+p2Score);
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try{
+                if(stmt!=null)
+                    conn.close();
+            }catch(SQLException se){
+            }// do nothing
+            try{
+                if(conn!=null)
+                    conn.close();
+            }catch(SQLException se){
+                se.printStackTrace();
+            }//end finally try
         }
+
+
+        return 0;
+    }
 
 }
