@@ -19,8 +19,10 @@ public class Main {
         }
 
         Classifier cls = p.trainClassifier();
+        p.setClassifier(cls);
 
         r.readData(year, true);
+        p.writepredictions();
         p.eval(cls);
 
 

@@ -66,30 +66,41 @@ public class CSVWriter {
 
     }
 
-    public void writeAllPredictions(List<Double[]> predList) {
+    public void writeAllPredictions(List<double[]> predList, List<String[]> names) {
         try {
             Workbook workbook = new HSSFWorkbook();
             Sheet sheet = workbook.createSheet("new sheet");
 
             Row row = sheet.createRow(0);
-            row.createCell(0).setCellValue("Winner R");
-            row.createCell(1).setCellValue("Winner RD");
-            row.createCell(2).setCellValue("Loser R");
-            row.createCell(3).setCellValue("Loser RD");
-            row.createCell(4).setCellValue("Correct Prediction");
-            row.createCell(5).setCellValue("Difference in R");
+            row.createCell(0).setCellValue("Higher");
+            row.createCell(1).setCellValue("Lower");
+            row.createCell(2).setCellValue("Tournament");
+            row.createCell(3).setCellValue("Higher R");
+            row.createCell(4).setCellValue("Lower R");
+            row.createCell(5).setCellValue("High Surf R");
+            row.createCell(6).setCellValue("Low Surf R");
+            row.createCell(7).setCellValue("H2H");
+            row.createCell(8).setCellValue("Winner");
+            row.createCell(9).setCellValue("Loser");
+            row.createCell(10).setCellValue("Higher Surf");
 
 
 
             int i = 1;
-            for (Double[] pred : predList) {
+            for (double[] pred : predList) {
                 Row row1 = sheet.createRow(i);
-                row1.createCell(0).setCellValue(pred[0]);
-                row1.createCell(1).setCellValue(pred[1]);
-                row1.createCell(2).setCellValue(pred[2]);
-                row1.createCell(3).setCellValue(pred[3]);
-                row1.createCell(4).setCellValue(pred[4]);
-                row1.createCell(5).setCellValue(pred[0] - pred[2]);
+                row1.createCell(0).setCellValue(names.get(i-1)[0]);
+                row1.createCell(1).setCellValue(names.get(i-1)[1]);
+                row1.createCell(2).setCellValue(names.get(i-1)[2]);
+                row1.createCell(3).setCellValue(pred[0]);
+                row1.createCell(4).setCellValue(pred[1]);
+                row1.createCell(5).setCellValue(pred[2]);
+                row1.createCell(6).setCellValue(pred[3]);
+                row1.createCell(7).setCellValue(pred[4]);
+                row1.createCell(8).setCellValue(names.get(i-1)[3]);
+                row1.createCell(9).setCellValue(names.get(i-1)[4]);
+                row1.createCell(10).setCellValue(names.get(i-1)[5]);
+
                 i++;
             }
 

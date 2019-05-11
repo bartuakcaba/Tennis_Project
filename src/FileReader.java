@@ -38,7 +38,7 @@ public class FileReader {
     //Here we need to read and create ranking for all players
     //At some point you need to add code to be able to create new entries for players
 
-    public void readData(int year, boolean predictFlag) {
+    public void readData(int year, boolean predictFlag) throws Exception {
 
 
         BufferedReader br = null;
@@ -120,16 +120,23 @@ public class FileReader {
                                 clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer));
                         predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h);
+//                        predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+//                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
+
                     } else if (surface.equals("Grass")) {
                         predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer));
                         predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h);
+//                        predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+//                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
                     } else {
                         predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer));
                         predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h);
+//                        predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+//                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
                     }
                 } else {
                     if (surface.equals("Clay")) {
