@@ -14,7 +14,6 @@ def readFile():
 	surf_ratio = df['Low Surf R'] / df['High Surf R'] 
 	df['Surf_ratio'] = surf_ratio.where(df['Higher Surf'] == df['Winner'], other=-surf_ratio)
 
-
 	ax1 = df.plot.scatter(x='R_ratio', y='Surf_ratio', c = 'H2H',colormap='viridis')
 	label_point(df['R_ratio'], df['Surf_ratio'], df['Loser'], ax1)
 	plt.axhline(0)

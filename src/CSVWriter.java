@@ -88,20 +88,22 @@ public class CSVWriter {
 
             int i = 1;
             for (double[] pred : predList) {
-                Row row1 = sheet.createRow(i);
-                row1.createCell(0).setCellValue(names.get(i-1)[0]);
-                row1.createCell(1).setCellValue(names.get(i-1)[1]);
-                row1.createCell(2).setCellValue(names.get(i-1)[2]);
-                row1.createCell(3).setCellValue(pred[0]);
-                row1.createCell(4).setCellValue(pred[1]);
-                row1.createCell(5).setCellValue(pred[2]);
-                row1.createCell(6).setCellValue(pred[3]);
-                row1.createCell(7).setCellValue(pred[4]);
-                row1.createCell(8).setCellValue(names.get(i-1)[3]);
-                row1.createCell(9).setCellValue(names.get(i-1)[4]);
-                row1.createCell(10).setCellValue(names.get(i-1)[5]);
 
-                i++;
+                    Row row1 = sheet.createRow(i);
+                    row1.createCell(0).setCellValue(names.get(i - 1)[0]);
+                    row1.createCell(1).setCellValue(names.get(i - 1)[1]);
+                    row1.createCell(2).setCellValue(names.get(i - 1)[2]);
+                    row1.createCell(3).setCellValue(pred[0]);
+                    row1.createCell(4).setCellValue(pred[1]);
+                    row1.createCell(5).setCellValue(pred[2]);
+                    row1.createCell(6).setCellValue(pred[3]);
+                    row1.createCell(7).setCellValue(pred[4]);
+                    row1.createCell(8).setCellValue(names.get(i - 1)[3]);
+                    row1.createCell(9).setCellValue(names.get(i - 1)[4]);
+                    row1.createCell(10).setCellValue(names.get(i - 1)[5]);
+
+                    i++;
+
             }
 
             FileOutputStream fileOut = new FileOutputStream("predictions.xls");

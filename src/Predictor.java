@@ -10,6 +10,7 @@ import weka.classifiers.*;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.evaluation.Prediction;
 import weka.classifiers.functions.Logistic;
+import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
@@ -68,7 +69,7 @@ public class Predictor {
         attrs.add(att12);
         Attribute att13 = new Attribute("h2h");
         attrs.add(att13);
-        Attribute att14 = new Attribute("class", new ArrayList<String>(Arrays.asList(new String[] {"0", "1"})));
+        Attribute att14 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
         attrs.add(att14);
 
         dataset = new Instances("train", attrs, 10000);
@@ -86,137 +87,96 @@ public class Predictor {
 
     public void addToDataset(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface, double h2h) {
         Instance inst = new DenseInstance(14);
-        Instance inst2 = new DenseInstance(14);
         inst.setDataset(dataset);
-        inst2.setDataset(dataset2);
 
         Double[] higher = winningPlayer[0] > losingPlayer[0] ? winningPlayer : losingPlayer;
         Double[] lower = winningPlayer[0] > losingPlayer[0] ? losingPlayer : winningPlayer;
 
         if (winningPlayer[0] > losingPlayer[0]) {
             inst.setValue(6, winSurface[0]);
-//            inst.setValue(7, winSurface[1]);
-            inst.setValue(8, winSurface[2]);
+            inst.setValue(7, winSurface[1]);
+//            inst.setValue(8, winSurface[2]);
             inst.setValue(9, loseSurface[0]);
-//            inst.setValue(10, loseSurface[1]);
-            inst.setValue(11, loseSurface[2]);
-            inst2.setValue(6, winSurface[0]);
-            inst2.setValue(7, winSurface[1]);
-            inst2.setValue(8, winSurface[2]);
-            inst2.setValue(9, loseSurface[0]);
-            inst2.setValue(10, loseSurface[1]);
-            inst2.setValue(11, loseSurface[2]);
+            inst.setValue(10, loseSurface[1]);
+//            inst.setValue(11, loseSurface[2]);
         } else {
-            inst.setValue(6, loseSurface[0]);
-//            inst.setValue(7, loseSurface[1]);
-            inst.setValue(8, loseSurface[2]);
+            inst.setValue(6, loseSurface[0] );
+            inst.setValue(7, loseSurface[1]);
+//            inst.setValue(8, loseSurface[2]);
             inst.setValue(9, winSurface[0]);
-//            inst.setValue(10, winSurface[1]);
-            inst.setValue(11, winSurface[2]);
-            inst2.setValue(6, loseSurface[0]);
-            inst2.setValue(7, loseSurface[1]);
-            inst2.setValue(8, loseSurface[2]);
-            inst2.setValue(9, winSurface[0]);
-            inst2.setValue(10, winSurface[1]);
-            inst2.setValue(11, winSurface[2]);
+            inst.setValue(10, winSurface[1]);
+//            inst.setValue(11, winSurface[2]);
         }
 
         inst.setValue(0, higher[0]);
-//        inst.setValue(1, higher[1]);
+        inst.setValue(1, higher[1]);
         inst.setValue(2, higher[2]);
         inst.setValue(3, lower[0]);
-//        inst.setValue(4, lower[1]);
+        inst.setValue(4, lower[1]);
         inst.setValue(5, lower[2]);
         inst.setValue(12, h2h);
-        inst2.setValue(0, higher[0]);
-        inst2.setValue(1, higher[1]);
-        inst2.setValue(2, higher[2]);
-        inst2.setValue(3, lower[0]);
-        inst2.setValue(4, lower[1]);
-        inst2.setValue(5, lower[2]);
 
         inst.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
-        inst2.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
 
 
         dataset.add(inst);
-        dataset2.add(inst2);
     }
 
     public void addToTest(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface, Double h2h) {
         Instance inst = new DenseInstance(14);
         inst.setDataset(test);
-        Instance inst2 = new DenseInstance(14);
-        inst2.setDataset(test2);
 
         Double[] higher = winningPlayer[0] > losingPlayer[0] ? winningPlayer : losingPlayer;
         Double[] lower = winningPlayer[0] > losingPlayer[0] ? losingPlayer : winningPlayer;
 
         if (winningPlayer[0] > losingPlayer[0]) {
             inst.setValue(6, winSurface[0]);
-//            inst.setValue(7, winSurface[1]);
-            inst.setValue(8, winSurface[2]);
+            inst.setValue(7, winSurface[1]);
+//            inst.setValue(8, winSurface[2]);
             inst.setValue(9, loseSurface[0]);
-//            inst.setValue(10, loseSurface[1]);
-            inst.setValue(11, loseSurface[2]);
-            inst2.setValue(6, winSurface[0]);
-            inst2.setValue(7, winSurface[1]);
-            inst2.setValue(8, winSurface[2]);
-            inst2.setValue(9, loseSurface[0]);
-            inst2.setValue(10, loseSurface[1]);
-            inst2.setValue(11, loseSurface[2]);
+            inst.setValue(10, loseSurface[1]);
+//            inst.setValue(11, loseSurface[2]);
         } else {
             inst.setValue(6, loseSurface[0]);
-//            inst.setValue(7, loseSurface[1]);
-            inst.setValue(8, loseSurface[2]);
+            inst.setValue(7, loseSurface[1]);
+//            inst.setValue(8, loseSurface[2]);
             inst.setValue(9, winSurface[0]);
-//            inst.setValue(10, winSurface[1]);
-            inst.setValue(11, winSurface[2]);
-            inst2.setValue(6, loseSurface[0]);
-            inst2.setValue(7, loseSurface[1]);
-            inst2.setValue(8, loseSurface[2]);
-            inst2.setValue(9, winSurface[0]);
-            inst2.setValue(10, winSurface[1]);
-            inst2.setValue(11, winSurface[2]);
+            inst.setValue(10, winSurface[1]);
+//            inst.setValue(11, winSurface[2]);
         }
 
         inst.setValue(0, higher[0]);
-//        inst.setValue(1, higher[1]);
+        inst.setValue(1, higher[1]);
         inst.setValue(2, higher[2]);
         inst.setValue(3, lower[0]);
-//        inst.setValue(4, lower[1]);
+        inst.setValue(4, lower[1]);
         inst.setValue(5, lower[2]);
         inst.setValue(12, h2h);
-        inst2.setValue(0, higher[0]);
-        inst2.setValue(1, higher[1]);
-        inst2.setValue(2, higher[2]);
-        inst2.setValue(3, lower[0]);
-        inst2.setValue(4, lower[1]);
-        inst2.setValue(5, lower[2]);
 
         inst.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
-        inst2.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
 
         test.add(inst);
-        test2.add(inst2);
     }
 
     public Classifier trainClassifier() throws Exception {
-        Logistic classifier = new Logistic();
-        classifier.buildClassifier(dataset);
+//        Logistic classifier = new Logistic();
+//        classifier.buildClassifier(dataset);
 
-        return classifier;
+        MultilayerPerceptron mlp = new MultilayerPerceptron();
+        mlp.setLearningRate(0.1);
+        mlp.setMomentum(0.2);
+        mlp.setTrainingTime(2000);
+        mlp.setHiddenLayers("3");
+        mlp.buildClassifier(dataset);
+
+        return mlp;
     }
 
     public void eval(Classifier cls) throws Exception {
         Evaluation eval1 = new Evaluation(dataset);
-        Evaluation eval2 = new Evaluation(dataset2);
 
         eval1.evaluateModel(cls, test);
         System.out.println(eval1.toSummaryString("\nResults\n======\n", false));
-
-        eval2.evaluateModel(cls, test2);
-        System.out.println(eval2.toSummaryString("\nResults\n======\n", false));
     }
 
     public void predOneByOne(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
