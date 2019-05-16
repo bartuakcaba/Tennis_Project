@@ -17,6 +17,10 @@ public class ScoreCalculator {
 
     }
 
+    public int noOfSets(String s) {
+         return  StringUtils.countMatches(s, "-");
+    }
+
     public double[] calculateScoreGamewise(String scoreline) {
         String[] sets = scoreline.split("\\s+");
 

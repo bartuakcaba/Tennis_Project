@@ -146,4 +146,8 @@ public class Ratings {
         return  scores;
 
     }
+
+    public boolean areMapsEmpty() {
+        return scores.isEmpty();
+    }
 }

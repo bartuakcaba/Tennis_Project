@@ -2,11 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e4ec3ed-74aa-44da-859c-80111c312bf9" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/SetPredictor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Tennis_Project/Main.class" afterPath="$PROJECT_DIR$/out/production/Tennis_Project/Main.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CSVWriter.java" afterPath="$PROJECT_DIR$/src/CSVWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FileReader.java" afterPath="$PROJECT_DIR$/src/FileReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Predictor.java" afterPath="$PROJECT_DIR$/src/Predictor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tennis.py" afterPath="$PROJECT_DIR$/tennis.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Ratings.java" afterPath="$PROJECT_DIR$/src/Ratings.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ScoreCalculator.java" afterPath="$PROJECT_DIR$/src/ScoreCalculator.java" />
     </list>
     <ignored path="Tennis_Project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,7 +36,17 @@
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="23" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
+              <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Glicko2.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Glicko2.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="28" selection-start-line="0" selection-start-column="28" selection-end-line="0" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -42,8 +55,8 @@
       <file leaf-file-name="FileReader.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/FileReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.3703704">
-              <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+            <state vertical-scroll-proportion="-10.555555">
+              <caret line="161" column="83" selection-start-line="161" selection-start-column="83" selection-end-line="161" selection-end-column="83" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -51,22 +64,48 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Predictor.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SetPredictor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/SetPredictor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="61" column="30" selection-start-line="61" selection-start-column="8" selection-end-line="61" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Predictor.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Predictor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.34816247">
-              <caret line="137" column="48" selection-start-line="137" selection-start-column="48" selection-end-line="137" selection-end-column="48" />
+            <state vertical-scroll-proportion="-0.8148148">
+              <caret line="159" column="33" selection-start-line="159" selection-start-column="33" selection-end-line="159" selection-end-column="33" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
-                <element signature="e#9799#9800#0" expanded="true" />
-                <element signature="e#9858#9859#0" expanded="true" />
-                <element signature="e#9914#9915#0" expanded="true" />
-                <element signature="e#9958#9959#0" expanded="true" />
-                <element signature="e#13169#13170#0" expanded="true" />
-                <element signature="e#13234#13235#0" expanded="true" />
-                <marker date="1557960540377" expanded="true" signature="3436:3468" placeholder="..." />
-                <marker date="1557960540377" expanded="true" signature="5534:5557" placeholder="..." />
+                <element signature="e#8036#8037#0" expanded="true" />
+                <element signature="e#8095#8096#0" expanded="true" />
+                <element signature="e#8151#8152#0" expanded="true" />
+                <element signature="e#8195#8196#0" expanded="true" />
+                <element signature="e#11406#11407#0" expanded="true" />
+                <element signature="e#11471#11472#0" expanded="true" />
+                <marker date="1558030407732" expanded="true" signature="2744:2776" placeholder="..." />
+                <marker date="1558030407732" expanded="true" signature="2837:2871" placeholder="..." />
+                <marker date="1558030407732" expanded="true" signature="4843:4866" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ScoreCalculator.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ScoreCalculator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.99264705">
+              <caret line="77" column="54" selection-start-line="77" selection-start-column="54" selection-end-line="77" selection-end-column="54" />
+              <folding>
+                <element signature="e#431#432#0" expanded="true" />
+                <element signature="e#488#489#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -76,7 +115,7 @@
         <entry file="file://$PROJECT_DIR$/src/DBHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="202" column="0" selection-start-line="202" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
+              <caret line="202" column="19" selection-start-line="202" selection-start-column="19" selection-end-line="202" selection-end-column="19" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -89,10 +128,12 @@
         <entry file="file://$PROJECT_DIR$/src/Ratings.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+              <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
               <folding>
                 <element signature="e#2058#2059#0" expanded="true" />
                 <element signature="e#2113#2114#0" expanded="true" />
+                <element signature="e#5230#5231#0" expanded="true" />
+                <element signature="e#5269#5270#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -101,8 +142,8 @@
       <file leaf-file-name="CSVWriter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CSVWriter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.9629629">
-              <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+            <state vertical-scroll-proportion="-20.074074">
+              <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -156,15 +197,16 @@
       <list>
         <option value="$PROJECT_DIR$/src/Tournament.java" />
         <option value="$PROJECT_DIR$/src/Rankings.java" />
-        <option value="$PROJECT_DIR$/src/ScoreCalculator.java" />
         <option value="$PROJECT_DIR$/src/Player.java" />
         <option value="$PROJECT_DIR$/src/Glicko2.java" />
-        <option value="$PROJECT_DIR$/src/Ratings.java" />
-        <option value="$PROJECT_DIR$/src/DBHandler.java" />
         <option value="$PROJECT_DIR$/src/CSVWriter.java" />
-        <option value="$PROJECT_DIR$/src/FileReader.java" />
-        <option value="$PROJECT_DIR$/src/Main.java" />
+        <option value="$PROJECT_DIR$/src/Ratings.java" />
         <option value="$PROJECT_DIR$/src/Predictor.java" />
+        <option value="$PROJECT_DIR$/src/ScoreCalculator.java" />
+        <option value="$PROJECT_DIR$/src/Main.java" />
+        <option value="$PROJECT_DIR$/src/SetPredictor.java" />
+        <option value="$PROJECT_DIR$/src/DBHandler.java" />
+        <option value="$PROJECT_DIR$/src/FileReader.java" />
       </list>
     </option>
   </component>
@@ -652,7 +694,13 @@
       <option name="project" value="LOCAL" />
       <updated>1557599424378</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="neural network implemented&#10;">
+      <created>1557965997214</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1557965997215</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -711,7 +759,8 @@
     <MESSAGE value="Added ML for predictions" />
     <MESSAGE value="Add new attributes to ml (surface specific, h2h)" />
     <MESSAGE value="Work around with ML, a lot of code to be cleaned" />
-    <option name="LAST_COMMIT_MESSAGE" value="Work around with ML, a lot of code to be cleaned" />
+    <MESSAGE value="neural network implemented&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="neural network implemented&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -736,12 +785,24 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Predictor.java</url>
-          <line>175</line>
+          <line>160</line>
           <properties />
           <option name="timeStamp" value="141" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/FileReader.java</url>
+          <line>84</line>
+          <properties />
+          <option name="timeStamp" value="170" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/SetPredictor.java</url>
+          <line>63</line>
+          <properties />
+          <option name="timeStamp" value="178" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="142" />
+      <option name="time" value="179" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -775,14 +836,15 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#9799#9800#0" expanded="true" />
-            <element signature="e#9858#9859#0" expanded="true" />
-            <element signature="e#9914#9915#0" expanded="true" />
-            <element signature="e#9958#9959#0" expanded="true" />
-            <element signature="e#13169#13170#0" expanded="true" />
-            <element signature="e#13234#13235#0" expanded="true" />
-            <marker date="1557960540377" expanded="true" signature="3436:3468" placeholder="..." />
-            <marker date="1557960540377" expanded="true" signature="5534:5557" placeholder="..." />
+            <element signature="e#8036#8037#0" expanded="true" />
+            <element signature="e#8095#8096#0" expanded="true" />
+            <element signature="e#8151#8152#0" expanded="true" />
+            <element signature="e#8195#8196#0" expanded="true" />
+            <element signature="e#11406#11407#0" expanded="true" />
+            <element signature="e#11471#11472#0" expanded="true" />
+            <marker date="1558030407732" expanded="true" signature="2744:2776" placeholder="..." />
+            <marker date="1558030407732" expanded="true" signature="2837:2871" placeholder="..." />
+            <marker date="1558030407732" expanded="true" signature="4843:4866" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -830,14 +892,15 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#9799#9800#0" expanded="true" />
-            <element signature="e#9858#9859#0" expanded="true" />
-            <element signature="e#9914#9915#0" expanded="true" />
-            <element signature="e#9958#9959#0" expanded="true" />
-            <element signature="e#13169#13170#0" expanded="true" />
-            <element signature="e#13234#13235#0" expanded="true" />
-            <marker date="1557960540377" expanded="true" signature="3436:3468" placeholder="..." />
-            <marker date="1557960540377" expanded="true" signature="5534:5557" placeholder="..." />
+            <element signature="e#8036#8037#0" expanded="true" />
+            <element signature="e#8095#8096#0" expanded="true" />
+            <element signature="e#8151#8152#0" expanded="true" />
+            <element signature="e#8195#8196#0" expanded="true" />
+            <element signature="e#11406#11407#0" expanded="true" />
+            <element signature="e#11471#11472#0" expanded="true" />
+            <marker date="1558030407732" expanded="true" signature="2744:2776" placeholder="..." />
+            <marker date="1558030407732" expanded="true" signature="2837:2871" placeholder="..." />
+            <marker date="1558030407732" expanded="true" signature="4843:4866" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -982,30 +1045,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ScoreCalculator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="50" column="48" selection-start-line="50" selection-start-column="48" selection-end-line="50" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/out/production/Tennis_Project/Main.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#480#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Glicko2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.185185">
-          <caret line="151" column="32" selection-start-line="151" selection-start-column="32" selection-end-line="151" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1032,12 +1077,57 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DBHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/CSVWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-20.074074">
+          <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Glicko2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="202" column="0" selection-start-line="202" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
+          <caret line="0" column="28" selection-start-line="0" selection-start-column="28" selection-end-line="0" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Predictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.8148148">
+          <caret line="159" column="33" selection-start-line="159" selection-start-column="33" selection-end-line="159" selection-end-column="33" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#8036#8037#0" expanded="true" />
+            <element signature="e#8095#8096#0" expanded="true" />
+            <element signature="e#8151#8152#0" expanded="true" />
+            <element signature="e#8195#8196#0" expanded="true" />
+            <element signature="e#11406#11407#0" expanded="true" />
+            <element signature="e#11471#11472#0" expanded="true" />
+            <marker date="1558030407732" expanded="true" signature="2744:2776" placeholder="..." />
+            <marker date="1558030407732" expanded="true" signature="2837:2871" placeholder="..." />
+            <marker date="1558030407732" expanded="true" signature="4843:4866" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="23" selection-start-line="12" selection-start-column="23" selection-end-line="12" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SetPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="61" column="30" selection-start-line="61" selection-start-column="8" selection-end-line="61" selection-end-column="30" />
+          <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -1046,19 +1136,22 @@
     <entry file="file://$PROJECT_DIR$/src/Ratings.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
           <folding>
             <element signature="e#2058#2059#0" expanded="true" />
             <element signature="e#2113#2114#0" expanded="true" />
+            <element signature="e#5230#5231#0" expanded="true" />
+            <element signature="e#5269#5270#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CSVWriter.java">
+    <entry file="file://$PROJECT_DIR$/src/DBHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.9629629">
-          <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="202" column="19" selection-start-line="202" selection-start-column="19" selection-end-line="202" selection-end-column="19" />
           <folding>
+            <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -1066,37 +1159,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/FileReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.3703704">
-          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+        <state vertical-scroll-proportion="-10.555555">
+          <caret line="161" column="83" selection-start-line="161" selection-start-column="83" selection-end-line="161" selection-end-column="83" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/ScoreCalculator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="23" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Predictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34816247">
-          <caret line="137" column="48" selection-start-line="137" selection-start-column="48" selection-end-line="137" selection-end-column="48" />
+        <state vertical-scroll-proportion="0.99264705">
+          <caret line="77" column="54" selection-start-line="77" selection-start-column="54" selection-end-line="77" selection-end-column="54" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <element signature="e#9799#9800#0" expanded="true" />
-            <element signature="e#9858#9859#0" expanded="true" />
-            <element signature="e#9914#9915#0" expanded="true" />
-            <element signature="e#9958#9959#0" expanded="true" />
-            <element signature="e#13169#13170#0" expanded="true" />
-            <element signature="e#13234#13235#0" expanded="true" />
-            <marker date="1557960540377" expanded="true" signature="3436:3468" placeholder="..." />
-            <marker date="1557960540377" expanded="true" signature="5534:5557" placeholder="..." />
+            <element signature="e#431#432#0" expanded="true" />
+            <element signature="e#488#489#0" expanded="true" />
           </folding>
         </state>
       </provider>

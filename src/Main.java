@@ -9,21 +9,25 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         Predictor p = new Predictor();
+        SetPredictor sp = new SetPredictor();
         int year = 2017;
 
-        FileReader r = new FileReader(p);
+        FileReader r = new FileReader(p, sp);
 
         while (year < 2018) {
             r.readData(year, false);
             year++;
         }
 
-        Classifier cls = p.trainClassifier();
-        p.setClassifier(cls);
+        Classifier winCls = p.trainClassifier();
+        p.setClassifier(winCls);
+
+        Classifier setCls =  sp.train();
 
         r.readData(year, true);
         p.writepredictions();
-        p.eval(cls);
+        p.eval(winCls);
+        sp.eval(setCls);
 
 
         System.out.print(p.calculateAccuracy());
