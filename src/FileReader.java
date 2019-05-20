@@ -97,79 +97,61 @@ public class FileReader {
 
                 Player winningPlayer = new Player(Integer.parseInt(entry[7]), entry[10], entry[13]);
                 Player losingPlayer = new Player(Integer.parseInt(entry[17]), entry[20], entry[23]);
+                Double[] winnerSurfRatings;
+                Double[] loserSurfRatings;
                 String surface = entry[2];
 
                 checkRatingExists(winningPlayer, losingPlayer, ratings);
 
                 if (surface.equals("Clay")) {
                     checkRatingExists(winningPlayer, losingPlayer, clayRatings);
+                    winnerSurfRatings = clayRatings.getRanking(winningPlayer);
+                    loserSurfRatings = clayRatings.getRanking(losingPlayer);
+
                 } else if (surface.equals("Grass")) {
                     checkRatingExists(winningPlayer, losingPlayer, grassRatings);
+                    winnerSurfRatings = grassRatings.getRanking(winningPlayer);
+                    loserSurfRatings = grassRatings.getRanking(losingPlayer);
                 } else {
                     //only other surface is hard
                     checkRatingExists(winningPlayer, losingPlayer, hardRatings);
+                    winnerSurfRatings = hardRatings.getRanking(winningPlayer);
+                    loserSurfRatings = hardRatings.getRanking(losingPlayer);
                 }
 
                 double score = scoreCalculator.calcGameNormalised(entry[27]);
                 double winnerScore = score;
                 double loserScore = (1-score);
 
-//                winnerScore = (winnerScore / (loserScore+winnerScore));
-//                loserScore =1 - winnerScore;
-
-                double h2h = dbhandler.getH2H(winningPlayer, losingPlayer);
+                double h2h = dbhandler.getH2H(winningPlayer.getName(), losingPlayer.getName());
                 h2h = ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0] ? h2h : 1-h2h;
 
 
-                //Increment the predict counter if flag is in
                 if(predictFlag) {
 //                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 //                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
-                    if (surface.equals("Clay")) {
-                        predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer));
-//                        predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-//                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h);
-                        predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
-
-                    } else if (surface.equals("Grass")) {
-                        predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer));
-//                        predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-//                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h);
-                        predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
-                    } else {
-                        predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer));
-//                        predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-//                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h);
-                        predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
-                    }
+                    predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings,loserSurfRatings);
+//                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+//                                winnerSurfRatings, loserSurfRatings, h2h);
+                    predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings, loserSurfRatings, h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
 
                     //FOR SET PREDICTION
                     if (!entry[4].equals("G")) {
-                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer), h2h, scoreCalculator.noOfSets(entry[27]));
+                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
                     }
                 } else {
-                    if (surface.equals("Clay")) {
-                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                clayRatings.getRanking(winningPlayer), clayRatings.getRanking(losingPlayer), h2h);
-                    } else if (surface.equals("Grass")) {
-                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                grassRatings.getRanking(winningPlayer), grassRatings.getRanking(losingPlayer), h2h);
-                    } else {
-                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                hardRatings.getRanking(winningPlayer), hardRatings.getRanking(losingPlayer), h2h);
-                    }
+                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings, loserSurfRatings, h2h);
 
                     //FOR SET PREDICTION
                     if(!entry[4].equals("G")) {
-                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer), h2h, scoreCalculator.noOfSets(entry[27]));
-                    }
+                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                }
                 }
 
                 ratings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);

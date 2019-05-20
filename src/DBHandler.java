@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
-import java.util.HashMap;
 
 public class DBHandler {
 
@@ -171,13 +170,13 @@ public class DBHandler {
 
     }
 
-    public double getH2H(Player winningPlayer, Player losingPlayer) {
+    public double getH2H(String winningPlayer, String losingPlayer) {
         String url = "jdbc:sqlite:sqlite/tennis.db";
         Connection conn = null;
         Statement stmt = null;
 
-        String winner = winningPlayer.getName().replaceAll("\\s+", "");
-        String loser = losingPlayer.getName().replaceAll("\\s+", "");
+        String winner = winningPlayer.replaceAll("\\s+", "");
+        String loser = losingPlayer.replaceAll("\\s+", "");
 
         String searchQuery = "SELECT P1_Score, P2_Score " +
                 "from " + "Head_To_Head " +

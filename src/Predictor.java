@@ -153,6 +153,7 @@ public class Predictor {
         mlp.setTrainingTime(1500);
         mlp.setHiddenLayers("1");
         mlp.buildClassifier(dataset);
+        weka.core.SerializationHelper.write("geneva_mlp.model", mlp);
 
         return mlp;
     }

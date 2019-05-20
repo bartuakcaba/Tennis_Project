@@ -1,6 +1,6 @@
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.functions.MultilayerPerceptron;
+import weka.classifiers.functions.Logistic;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -44,7 +44,7 @@ public class SetPredictor {
         test.setClassIndex(test.numAttributes()-1);
     }
 
-    public void addToDataset(Double[] winnerRating, Double[] loserRating, Double h2h, int score) {
+    public void addToDataset(Double[] winnerRating, Double[] loserRating, Double[] winSurf, Double[] loseSurf, Double h2h, int score) {
 
         if (score != 2 && score != 3) {
             return;
@@ -54,19 +54,19 @@ public class SetPredictor {
         inst.setDataset(dataset);
 
         inst.setValue(0, winnerRating[0]);
-        inst.setValue(1, winnerRating[1]);
+        inst.setValue(1, winSurf[0]);
         inst.setValue(2, winnerRating[2]);
         inst.setValue(3, loserRating[0]);
-        inst.setValue(4, loserRating[1]);
+        inst.setValue(4, loseSurf[0]);
         inst.setValue(5, loserRating[2]);
-        inst.setValue(6, h2h);
+//        inst.setValue(6, h2h);
 
         inst.setValue(7, Integer.toString(score));
 
         dataset.add(inst);
     }
 
-    public void addToTest(Double[] winnerRating, Double[] loserRating, Double h2h, int score) {
+    public void addToTest(Double[] winnerRating, Double[] loserRating, Double[] winSurf, Double[] loseSurf, Double h2h, int score) {
 
         if (score != 2 && score != 3) {
             return;
@@ -76,12 +76,12 @@ public class SetPredictor {
         inst.setDataset(test);
 
         inst.setValue(0, winnerRating[0]);
-        inst.setValue(1, winnerRating[1]);
+        inst.setValue(1, winSurf[0]);
         inst.setValue(2, winnerRating[2]);
         inst.setValue(3, loserRating[0]);
-        inst.setValue(4, loserRating[1]);
+        inst.setValue(4, loseSurf[0]);
         inst.setValue(5, loserRating[2]);
-        inst.setValue(6, h2h);
+//        inst.setValue(6, h2h);
 
         inst.setValue(7, Integer.toString(score));
 
@@ -89,11 +89,11 @@ public class SetPredictor {
     }
 
     public Classifier train() throws Exception {
-        MultilayerPerceptron mlp = new MultilayerPerceptron();
-        mlp.setLearningRate(0.1);
-        mlp.setMomentum(0.2);
-        mlp.setTrainingTime(1500);
-        mlp.setHiddenLayers("1");
+        Logistic mlp = new Logistic();
+//        mlp.setLearningRate(0.1);
+//        mlp.setMomentum(0.2);
+//        mlp.setTrainingTime(2000);
+//        mlp.setHiddenLayers("3");
         mlp.buildClassifier(dataset);
 
         return mlp;
