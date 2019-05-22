@@ -3,11 +3,12 @@
  */
 
 import weka.classifiers.*;
+import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.MultilayerPerceptron;
 
+import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
 import weka.core.*;
-
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,26 +80,26 @@ public class Predictor {
 
         if (winningPlayer[0] > losingPlayer[0]) {
             inst.setValue(6, winSurface[0]);
-//            inst.setValue(7, winSurface[1]);
-//            inst.setValue(8, winSurface[2]);
+            inst.setValue(7, winSurface[1]);
+            inst.setValue(8, winSurface[2]);
             inst.setValue(9, loseSurface[0]);
-//            inst.setValue(10, loseSurface[1]);
-//            inst.setValue(11, loseSurface[2]);
+            inst.setValue(10, loseSurface[1]);
+            inst.setValue(11, loseSurface[2]);
         } else {
             inst.setValue(6, loseSurface[0]);
-//            inst.setValue(7, loseSurface[1]);
-//            inst.setValue(8, loseSurface[2]);
+            inst.setValue(7, loseSurface[1]);
+            inst.setValue(8, loseSurface[2]);
             inst.setValue(9, winSurface[0]);
-//            inst.setValue(10, winSurface[1]);
-//            inst.setValue(11, winSurface[2]);
+            inst.setValue(10, winSurface[1]);
+            inst.setValue(11, winSurface[2]);
         }
 
         inst.setValue(0, higher[0]);
         inst.setValue(1, higher[1]);
-//        inst.setValue(2, higher[2]);
+        inst.setValue(2, higher[2]);
         inst.setValue(3, lower[0]);
         inst.setValue(4, lower[1]);
-//        inst.setValue(5, lower[2]);
+        inst.setValue(5, lower[2]);
         inst.setValue(12, h2h);
 
         inst.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
@@ -144,7 +145,7 @@ public class Predictor {
     }
 
     public Classifier trainClassifier() throws Exception {
-//        Logistic classifier = new Logistic();
+//        RandomForest classifier = new RandomForest();
 //        classifier.buildClassifier(dataset);
 
         MultilayerPerceptron mlp = new MultilayerPerceptron();
@@ -153,7 +154,7 @@ public class Predictor {
         mlp.setTrainingTime(1500);
         mlp.setHiddenLayers("1");
         mlp.buildClassifier(dataset);
-        weka.core.SerializationHelper.write("geneva_mlp.model", mlp);
+//        weka.core.SerializationHelper.write("geneva_mlp.model", mlp);
 
         return mlp;
     }

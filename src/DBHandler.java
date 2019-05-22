@@ -185,8 +185,9 @@ public class DBHandler {
         try  {
             conn = DriverManager.getConnection(url);
             PreparedStatement pstmt = conn.prepareStatement(searchQuery);
+            boolean winnerAlph = winner.compareTo(loser) < 0;
 
-            if (winner.compareTo(loser) < 0) {
+            if (winnerAlph) {
                 pstmt.setString(1, winner);
                 pstmt.setString(2, loser);
             } else {
@@ -199,11 +200,13 @@ public class DBHandler {
             int p1Score = rs.getInt("P1_Score");
             int p2Score = rs.getInt("P2_Score");
 
-            return p1Score / (p1Score+p2Score);
+            double ratio = p1Score / (p1Score+p2Score);
 
+            return winnerAlph ? ratio : 1-ratio;
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            return -1;
         } finally {
             try{
                 if(stmt!=null)
@@ -217,9 +220,6 @@ public class DBHandler {
                 se.printStackTrace();
             }//end finally try
         }
-
-
-        return 0;
     }
 
 }

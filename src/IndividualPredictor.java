@@ -168,17 +168,26 @@ public class IndividualPredictor {
 
         if (p1[0] > p2[0]) {
             inst.setValue(6, p1Surf[0]);
+            inst.setValue(7, p1Surf[1]);
+            inst.setValue(8, p1Surf[2]);
             inst.setValue(9, p2Surf[0]);
+            inst.setValue(10, p2Surf[1]);
+            inst.setValue(11, p2Surf[2]);
         } else {
             inst.setValue(6, p2Surf[0]);
+            inst.setValue(7, p2Surf[1]);
+            inst.setValue(8, p2Surf[2]);
             inst.setValue(9, p1Surf[0]);
+            inst.setValue(10, p1Surf[1]);
+            inst.setValue(11, p1Surf[2]);
         }
 
         inst.setValue(0, higher[0]);
         inst.setValue(1, higher[1]);
-
+        inst.setValue(2, higher[2]);
         inst.setValue(3, lower[0]);
         inst.setValue(4, lower[1]);
+        inst.setValue(5, lower[2]);
 
         inst.setValue(12, h2h);
 

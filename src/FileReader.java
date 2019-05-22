@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.io.*;
 import java.util.*;
 
@@ -23,6 +25,7 @@ public class FileReader {
     Map<String, Double> tournyWeigths = getTourneyWeights();
     Map<String, Double> tournySize = getTournySize();
 
+    Map<H2H, Integer[]> h2HMap = new HashMap<>();
 
 
     public FileReader(Predictor predictor, SetPredictor setPredictor) {
@@ -63,6 +66,7 @@ public class FileReader {
                 // use comma as separator
                 String[] entry = line.split(cvsSplitBy);
                 //Davis Cup, ATP Tour Challanger Skip
+
                 if (entry.length == 0 || entry[4].equals("D") || entry[3].equals("9")) {
                     continue;
                 }
@@ -123,20 +127,27 @@ public class FileReader {
                 double winnerScore = score;
                 double loserScore = (1-score);
 
-                double h2h = dbhandler.getH2H(winningPlayer.getName(), losingPlayer.getName());
-                h2h = ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0] ? h2h : 1-h2h;
+                double h2h = getH2H(winningPlayer, losingPlayer);
+
+//                double h2h = dbhandler.getH2H(winningPlayer.getName(), losingPlayer.getName());
+//
+//                //The cases where these two palyers have met before
+//                if (h2h != -1) {
+//                    h2h = ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0] ? h2h : 1 - h2h;
+//                }
 
 
                 if(predictFlag) {
 //                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
-//                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
+
+                    if (h2h == -1) {
+                        continue;
+                    }
 
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
-//                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-//                                winnerSurfRatings, loserSurfRatings, h2h);
-                    predictor.predOneByOne(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings, loserSurfRatings, h2h, winningPlayer.getName(), losingPlayer.getName(),entry[1]);
+                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                               winnerSurfRatings, loserSurfRatings, h2h);
 
                     //FOR SET PREDICTION
                     if (!entry[4].equals("G")) {
@@ -151,7 +162,7 @@ public class FileReader {
                     if(!entry[4].equals("G")) {
                         setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                                 winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
-                }
+                    }
                 }
 
                 ratings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
@@ -191,6 +202,43 @@ public class FileReader {
                 }
             }
         }
+    }
+
+    private double getH2H(Player winner, Player loser) {
+
+        boolean winnerAlph = winner.getName().compareTo(loser.getName()) < 0;
+        Player alpHigher = winner.getName().compareTo(loser.getName()) < 0 ? winner : loser;
+        Player ratingHigher = ratings.getRanking(winner)[0] >= ratings.getRanking(loser)[0] ?winner : loser;
+        boolean higherAlph = alpHigher.equals(ratingHigher);
+
+        H2H h2h;
+
+        if (winnerAlph) {
+            h2h = new H2H(winner.getName(), loser.getName());
+        } else {
+            h2h = new H2H(loser.getName(), winner.getName());
+        }
+
+        if (h2HMap.containsKey(h2h)) {
+            int p1wins = h2HMap.get(h2h)[0];
+            int p2wins = h2HMap.get(h2h)[1];
+            double ratio =  p1wins / (p1wins + p2wins) ;
+
+            if (winnerAlph) {
+                h2HMap.put(h2h, new Integer[]{p1wins+1, p2wins});
+            } else {
+                h2HMap.put(h2h, new Integer[]{p1wins, p2wins+1});
+            }
+            return higherAlph ? ratio : 1-ratio;
+        } else {
+            if (winnerAlph) {
+                h2HMap.put(h2h, new Integer[]{1, 0});
+            } else {
+                h2HMap.put(h2h, new Integer[]{0, 1});
+            }
+            return higherAlph ? -1 : -2;
+        }
+
     }
 
     private void checkRatingExists(Player winningPlayer, Player losingPlayer, Ratings ratings) {
