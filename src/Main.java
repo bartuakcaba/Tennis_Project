@@ -12,7 +12,7 @@ public class Main {
         SetPredictor sp = new SetPredictor();
         int year = 2017;
 
-        FileReader r = new FileReader(p, sp);
+        MatchlyUpdater r = new MatchlyUpdater(p, sp);
 
         while (year < 2019) {
             r.readData(year, false);
@@ -22,12 +22,12 @@ public class Main {
         Classifier winCls = p.trainClassifier();
         p.setClassifier(winCls);
 
-        Classifier setCls =  sp.train();
+//        Classifier setCls =  sp.train();
 
         r.readData(year, true);
         p.writepredictions();
         p.eval(winCls);
-        sp.eval(setCls);
+//        sp.eval(setCls);
 
         System.out.print(p.calculateAccuracy());
 

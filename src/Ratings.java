@@ -25,9 +25,9 @@ public class Ratings {
         writeToExcel2(opponents);
 //        scores = normaliseRankings(scores);
 
-        for(Map.Entry<Player, Double[]> rivals : rankings.entrySet()) {
-            Double[] convertedRatings = rater.convertGlicko2(rivals.getValue());
-            rankings.put(rivals.getKey(), convertedRatings);
+        for(Map.Entry<Player, Double[]> rating : rankings.entrySet()) {
+            Double[] convertedRatings = rater.convertGlicko2(rating.getValue());
+            rankings.put(rating.getKey(), convertedRatings);
         }
 
         //turn Rankings into Glicko-2 scale
@@ -39,6 +39,42 @@ public class Ratings {
                 Double[] newRating = rater.updateUnplayedPlayer(glicko2Rating);
                 Double[] convertedBack = rater.convertBack(newRating);
                 rankings.put(ranking.getKey(), convertedBack);
+                continue;
+            }
+
+            Double v = rater.calcV(glicko2Rating, rivalRatings);
+
+            Double diff = rater.calcEstImprovement(v, scores.get(ranking.getKey()), glicko2Rating, rivalRatings);
+
+            Double newVol = rater.calcNewVol(glicko2Rating[1], diff, v, glicko2Rating[2]);
+
+            Double newRD = rater.updateRD(glicko2Rating[1], newVol);
+
+            Double[] newRatings = rater.updateRating(v, scores.get(ranking.getKey()), glicko2Rating, rivalRatings, newRD, newVol);
+
+            Double[] convertedBack = rater.convertBack(newRatings);
+
+            rankings.put(ranking.getKey(), convertedBack);
+        }
+
+    }
+
+    public void updateRatingsMatchly() {
+        writeToExcel2(opponents);
+//        scores = normaliseRankings(scores);
+
+        for(Map.Entry<Player, Double[]> rating : rankings.entrySet()) {
+            Double[] convertedRatings = rater.convertGlicko2(rating.getValue());
+            rankings.put(rating.getKey(), convertedRatings);
+        }
+
+        //turn Rankings into Glicko-2 scale
+        for (Map.Entry<Player, Double[]> ranking : rankings.entrySet()) {
+            Double[] glicko2Rating = ranking.getValue();
+            List<Double[]> rivalRatings = opponents.get(ranking.getKey());
+
+            if (rivalRatings.isEmpty()) {
+                rankings.put(ranking.getKey(), rater.convertBack(glicko2Rating));
                 continue;
             }
 
@@ -150,4 +186,19 @@ public class Ratings {
     public boolean areMapsEmpty() {
         return scores.isEmpty();
     }
+
+    public void updateRD(List<Player> playedThisWeek) {
+
+        for (Map.Entry<Player, Double[]> ranking : rankings.entrySet()) {
+            if (!playedThisWeek.contains(ranking.getKey())) {
+                Double[] glicko2Rating = ranking.getValue();
+                 glicko2Rating = rater.convertGlicko2(ranking.getValue());
+                Double[] newRating = rater.updateUnplayedPlayer(glicko2Rating);
+                Double[] convertedBack = rater.convertBack(newRating);
+                rankings.put(ranking.getKey(), convertedBack);
+            }
+        }
+    }
+
+
 }

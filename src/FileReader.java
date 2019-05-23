@@ -140,10 +140,6 @@ public class FileReader {
                 if(predictFlag) {
 //                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
-                    if (h2h == -1) {
-                        continue;
-                    }
-
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
                     predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
