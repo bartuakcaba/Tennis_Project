@@ -10,9 +10,9 @@ public class Main {
 
         Predictor p = new Predictor();
         SetPredictor sp = new SetPredictor();
-        int year = 2017;
+        int year = 1990;
 
-        MatchlyUpdater r = new MatchlyUpdater(p, sp);
+        FileReader r = new FileReader(p, sp);
 
         while (year < 2019) {
             r.readData(year, false);

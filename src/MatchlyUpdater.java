@@ -20,6 +20,7 @@ public class MatchlyUpdater {
     Map<H2H, Integer[]> h2HMap = new HashMap<>();
     Map<Integer, String[]> currentTournyEntries = new HashMap<>();
     List<Player> playedThisWeek = new ArrayList<>();
+    Map<Player, Integer> noOfTitles = new HashMap<>();
 
     public MatchlyUpdater(Predictor predictor, SetPredictor setPredictor) {
         ratings= new Ratings();
@@ -180,13 +181,28 @@ public class MatchlyUpdater {
 
             double h2h = getH2H(winningPlayer, losingPlayer);
 
+            if (entry[29].equals("F")) {
+                putTitleWin(winningPlayer);
+            }
+
+            int higherTitles;
+            int lowerTitles;
+
+            if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
+                higherTitles = noOfTitles.get(winningPlayer);
+                lowerTitles = noOfTitles.get(losingPlayer);
+            } else {
+                higherTitles = noOfTitles.get(losingPlayer);
+                lowerTitles = noOfTitles.get(winningPlayer);
+            }
+
             if(predictFlag) {
 //                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
                 predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                         winnerSurfRatings,loserSurfRatings);
                 predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles);
 
                 //FOR SET PREDICTION
                 if (!entry[4].equals("G")) {
@@ -195,7 +211,7 @@ public class MatchlyUpdater {
                 }
             } else {
                 predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles);
 
                 //FOR SET PREDICTION
                 if(!entry[4].equals("G")) {
@@ -237,6 +253,17 @@ public class MatchlyUpdater {
 
 
     }
+
+    private void putTitleWin(Player winningPlayer) {
+
+        if (noOfTitles.containsKey(winningPlayer)) {
+            int titles = noOfTitles.get(winningPlayer);
+            noOfTitles.put(winningPlayer, ++titles);
+        } else {
+            noOfTitles.put(winningPlayer,1);
+        }
+    }
+
 
     private void checkRatingExists(Player winningPlayer, Player losingPlayer, Ratings ratings) {
         if (!ratings.rakingContains(winningPlayer)) {

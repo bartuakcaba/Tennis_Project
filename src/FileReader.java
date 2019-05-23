@@ -26,6 +26,7 @@ public class FileReader {
     Map<String, Double> tournySize = getTournySize();
 
     Map<H2H, Integer[]> h2HMap = new HashMap<>();
+    Map<Player, Integer> noOfTitles = new HashMap<>();
 
 
     public FileReader(Predictor predictor, SetPredictor setPredictor) {
@@ -123,9 +124,27 @@ public class FileReader {
                     loserSurfRatings = hardRatings.getRanking(losingPlayer);
                 }
 
+                if (entry[29].equals("F")) {
+                    putTitleWin(winningPlayer);
+                }
+
+                int higherTitles;
+                int lowerTitles;
+
+                if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
+                    higherTitles = noOfTitles.get(winningPlayer);
+                    lowerTitles = noOfTitles.get(losingPlayer);
+                } else {
+                    higherTitles = noOfTitles.get(losingPlayer);
+                    lowerTitles = noOfTitles.get(winningPlayer);
+                }
+
                 double score = scoreCalculator.calcGameNormalised(entry[27]);
-                double winnerScore = score;
-                double loserScore = (1-score);
+                double winnerScore = score/2 + tournyWeigths.get(entry[4])/3 + matchLossWeights.get(entry[29])/3;
+                winnerScore = winnerScore > 1 ? 1 : winnerScore;
+                double loserScore = (1-score)/2;
+                loserScore = loserScore > 0.5 ? 0.5 : loserScore;
+//                loserScore += tournyWeigths.get(entry[4]);
 
                 double h2h = getH2H(winningPlayer, losingPlayer);
 
@@ -135,31 +154,6 @@ public class FileReader {
 //                if (h2h != -1) {
 //                    h2h = ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0] ? h2h : 1 - h2h;
 //                }
-
-
-                if(predictFlag) {
-//                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
-
-                    predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings,loserSurfRatings);
-                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                               winnerSurfRatings, loserSurfRatings, h2h);
-
-                    //FOR SET PREDICTION
-                    if (!entry[4].equals("G")) {
-                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
-                    }
-                } else {
-                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings, loserSurfRatings, h2h);
-
-                    //FOR SET PREDICTION
-                    if(!entry[4].equals("G")) {
-                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
-                    }
-                }
 
                 ratings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
 
@@ -173,6 +167,30 @@ public class FileReader {
                     hardRatings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
                 }
 
+
+                if(predictFlag) {
+//                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
+
+                    predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings,loserSurfRatings);
+                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                               winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles);
+
+                    //FOR SET PREDICTION
+                    if (!entry[4].equals("G")) {
+                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                    }
+                } else {
+                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles);
+
+                    //FOR SET PREDICTION
+                    if(!entry[4].equals("G")) {
+                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                    }
+                }
             }
 
             //Final ratings update
@@ -200,6 +218,11 @@ public class FileReader {
         }
     }
 
+    private void putTitleWin(Player winningPlayer) {
+        int titles = noOfTitles.get(winningPlayer);
+        noOfTitles.put(winningPlayer, ++titles);
+    }
+
     private double getH2H(Player winner, Player loser) {
 
         boolean winnerAlph = winner.getName().compareTo(loser.getName()) < 0;
@@ -218,7 +241,7 @@ public class FileReader {
         if (h2HMap.containsKey(h2h)) {
             int p1wins = h2HMap.get(h2h)[0];
             int p2wins = h2HMap.get(h2h)[1];
-            double ratio =  p1wins / (p1wins + p2wins) ;
+            double ratio =  p1wins / (p1wins + p2wins);
 
             if (winnerAlph) {
                 h2HMap.put(h2h, new Integer[]{p1wins+1, p2wins});
@@ -242,26 +265,37 @@ public class FileReader {
             Double[] playerRating = {1500.0, 350.0, 0.06};
             winningPlayer.setRating(playerRating);
             ratings.addNewPlayer(winningPlayer, playerRating);
+            noOfTitles.put(winningPlayer, 0);
         }
 
         if (!ratings.rakingContains(losingPlayer)) {
             Double[] playerRating = {1500.0, 350.0, 0.06};
             losingPlayer.setRating(playerRating);
             ratings.addNewPlayer(losingPlayer, playerRating);
+            noOfTitles.put(losingPlayer, 0);
         }
     }
 
     private Map<String, Double> getWinWeights() {
         Map<String, Double> map = new HashMap<>();
 
-        map.put("RR", 1.0);
-        map.put("R128", 1.0);
-        map.put("R64", 1.20);
-        map.put("R32", 1.50);
-        map.put("R16", 2.0);
-        map.put("QF", 2.50);
-        map.put("SF", 3.0);
-        map.put("F", 4.0);
+//        map.put("RR", 1.0);
+//        map.put("R128", 1.0);
+//        map.put("R64", 1.20);
+//        map.put("R32", 1.50);
+//        map.put("R16", 2.0);
+//        map.put("QF", 2.50);
+//        map.put("SF", 3.0);
+//        map.put("F", 4.0);
+
+        map.put("RR", 0.40);
+        map.put("R128", 0.30);
+        map.put("R64", 0.30);
+        map.put("R32", 0.35);
+        map.put("R16", 0.35);
+        map.put("QF", 0.40);
+        map.put("SF", 0.45);
+        map.put("F", 0.50);
 
         return map;
     }
@@ -269,11 +303,12 @@ public class FileReader {
     private Map<String, Double> getLossWeights() {
         Map<String, Double> map = new HashMap<>();
 
-        map.put("RR", 0.5);
-        map.put("R128", 0.5);
+        map.put("RR", 0.7);
+        map.put("BR", 0.7);
+        map.put("R128", 0.4);
         map.put("R64", 0.5);
         map.put("R32", 0.6);
-        map.put("R16", 0.70);
+        map.put("R16", 0.7);
         map.put("QF", 0.80);
         map.put("SF", 0.90);
         map.put("F", 1.0);
@@ -284,12 +319,19 @@ public class FileReader {
     private Map<String, Double> getTourneyWeights() {
         Map<String, Double> map = new HashMap<>();
 
-        map.put("D", 1.0);
-        map.put("A", 1.50);
-        map.put("M", 2.0);
-        map.put("C", 2.0);
-        map.put("F", 2.0);
-        map.put("G", 4.0);
+//        map.put("D", 1.0);
+//        map.put("A", 1.50);
+//        map.put("M", 2.0);
+//        map.put("C", 2.0);
+//        map.put("F", 2.0);
+//        map.put("G", 4.0);
+
+        map.put("D", 0.7);
+        map.put("A", 0.7);
+        map.put("M", 0.8);
+        map.put("C", 0.9);
+        map.put("F", 0.9);
+        map.put("G", 1.0);
         return map;
     }
 

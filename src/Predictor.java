@@ -59,8 +59,12 @@ public class Predictor {
         attrs.add(att12);
         Attribute att13 = new Attribute("h2h");
         attrs.add(att13);
-        Attribute att14 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        Attribute att14 = new Attribute("higherTitles");
         attrs.add(att14);
+        Attribute att15 = new Attribute("lowerTitles");
+        attrs.add(att15);
+        Attribute att16 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        attrs.add(att16);
 
         dataset = new Instances("train", attrs, 10000);
         dataset.setClassIndex(dataset.numAttributes()-1);
@@ -71,8 +75,9 @@ public class Predictor {
 
     }
 
-    public void addToDataset(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface, double h2h) {
-        Instance inst = new DenseInstance(14);
+    public void addToDataset(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
+                             double h2h, int higherTitles, int lowerTitles) {
+        Instance inst = new DenseInstance(16);
         inst.setDataset(dataset);
 
         Double[] higher = winningPlayer[0]  > losingPlayer[0] ? winningPlayer : losingPlayer;
@@ -101,15 +106,18 @@ public class Predictor {
         inst.setValue(4, lower[1]);
         inst.setValue(5, lower[2]);
         inst.setValue(12, h2h);
+        inst.setValue(13, higherTitles);
+        inst.setValue(14, lowerTitles);
 
-        inst.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
+        inst.setValue(15, higher.equals(winningPlayer) ? "1" : "0");
 
 
         dataset.add(inst);
     }
 
-    public void addToTest(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface, Double h2h) {
-        Instance inst = new DenseInstance(14);
+    public void addToTest(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
+                          Double h2h, int higherTitles, int lowerTitles) {
+        Instance inst = new DenseInstance(16);
         inst.setDataset(test);
 
         Double[] higher = winningPlayer[0] > losingPlayer[0] ? winningPlayer : losingPlayer;
@@ -138,8 +146,10 @@ public class Predictor {
         inst.setValue(4, lower[1]);
         inst.setValue(5, lower[2]);
         inst.setValue(12, h2h);
+        inst.setValue(13, higherTitles);
+        inst.setValue(14, lowerTitles);
 
-        inst.setValue(13, higher.equals(winningPlayer) ? "1" : "0");
+        inst.setValue(15, higher.equals(winningPlayer) ? "1" : "0");
 
         test.add(inst);
     }
