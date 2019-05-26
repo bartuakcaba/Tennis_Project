@@ -20,14 +20,14 @@ import java.util.Arrays;
  */
 public class IndividualPredictor {
 
-    String ratingsFile = "GenevaRatings.xls";
-    String surfRatingsFile = "GenevaClayRatings.xls";
+    String ratingsFile = "RG/RG_ratings.xls";
+    String surfRatingsFile = "RG/RG_clay_ratings.xls";
     Classifier mlp;
     Instances test;
     DBHandler dbhandler;
 
     public IndividualPredictor() throws Exception {
-        mlp = (Classifier) weka.core.SerializationHelper.read("geneva_mlp.model");
+        mlp = (Classifier) weka.core.SerializationHelper.read("RG/RG_mlp.model");
         dbhandler = new DBHandler();
 
         ArrayList<Attribute> attrs = new ArrayList<>();
@@ -56,10 +56,8 @@ public class IndividualPredictor {
         attrs.add(att11);
         Attribute att12 = new Attribute("lower_surface_vol");
         attrs.add(att12);
-        Attribute att13 = new Attribute("h2h");
+        Attribute att13 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
         attrs.add(att13);
-        Attribute att14 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
-        attrs.add(att14);
 
         test = new Instances("test", attrs, 10000);
         test.setClassIndex(test.numAttributes()-1);
@@ -119,12 +117,9 @@ public class IndividualPredictor {
 
             }
 
-            double h2h = dbhandler.getH2H(player1, player2);
-            h2h = p1Rating[0] > p2Rating[0] ? h2h : 1-h2h;
-
 
             Evaluation evaluation = new Evaluation(test);
-            evaluation.evaluateModelOnceAndRecordPrediction(mlp, createInstance(p1Rating, p2Rating, surfp1Rating, surfp2Rating, h2h));
+            evaluation.evaluateModelOnceAndRecordPrediction(mlp, createInstance(p1Rating, p2Rating, surfp1Rating, surfp2Rating));
 
             for (Object o : evaluation.predictions().toArray())
             {
@@ -141,9 +136,9 @@ public class IndividualPredictor {
                     lower =  p1Rating[0] > p2Rating[0] ? player2 : player1;
 
                     if (predicted == 1.0) {
-                        System.out.println("Winner should be " + higher);
+                        System.out.println("Winner should be " + higher + " against " + lower);
                     } else {
-                        System.out.println("Winner should be " + lower);
+                        System.out.println("Winner should be " + lower + " against " + higher);
                     }
                 }
             }
@@ -159,7 +154,7 @@ public class IndividualPredictor {
         }
     }
 
-    private Instance createInstance(double[] p1, double[] p2, double[] p1Surf, double[] p2Surf, double h2h) {
+    private Instance createInstance(double[] p1, double[] p2, double[] p1Surf, double[] p2Surf) {
         Instance inst = new DenseInstance(14);
         inst.setDataset(test);
 
@@ -188,8 +183,6 @@ public class IndividualPredictor {
         inst.setValue(3, lower[0]);
         inst.setValue(4, lower[1]);
         inst.setValue(5, lower[2]);
-
-        inst.setValue(12, h2h);
 
         test.add(inst);
 

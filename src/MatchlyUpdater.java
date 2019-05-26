@@ -22,6 +22,9 @@ public class MatchlyUpdater {
     List<Player> playedThisWeek = new ArrayList<>();
     Map<Player, Integer> noOfTitles = new HashMap<>();
 
+    Map<String, Double> matchLossWeights = getLossWeights();
+    Map<String, Double> tournyWeigths = getTourneyWeights();
+
     public MatchlyUpdater(Predictor predictor, SetPredictor setPredictor) {
         ratings= new Ratings();
         clayRatings = new Ratings();
@@ -176,8 +179,10 @@ public class MatchlyUpdater {
             }
 
             double score = scoreCalculator.calcGameNormalised(entry[27]);
-            double winnerScore = score;
-            double loserScore = (1-score);
+            double winnerScore = score/2 + tournyWeigths.get(entry[4])/3 + matchLossWeights.get(entry[29])/3;
+            winnerScore = winnerScore > 1 ? 1 : winnerScore;
+            double loserScore = (1-score)/2;
+            loserScore = loserScore > 0.5 ? 0.5 : loserScore;
 
             double h2h = getH2H(winningPlayer, losingPlayer);
 
@@ -202,7 +207,7 @@ public class MatchlyUpdater {
                 predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                         winnerSurfRatings,loserSurfRatings);
                 predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0);
 
                 //FOR SET PREDICTION
                 if (!entry[4].equals("G")) {
@@ -211,7 +216,7 @@ public class MatchlyUpdater {
                 }
             } else {
                 predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0);
 
                 //FOR SET PREDICTION
                 if(!entry[4].equals("G")) {
@@ -255,27 +260,23 @@ public class MatchlyUpdater {
     }
 
     private void putTitleWin(Player winningPlayer) {
-
-        if (noOfTitles.containsKey(winningPlayer)) {
-            int titles = noOfTitles.get(winningPlayer);
-            noOfTitles.put(winningPlayer, ++titles);
-        } else {
-            noOfTitles.put(winningPlayer,1);
-        }
+        int titles = noOfTitles.get(winningPlayer);
+        noOfTitles.put(winningPlayer, ++titles);
     }
-
 
     private void checkRatingExists(Player winningPlayer, Player losingPlayer, Ratings ratings) {
         if (!ratings.rakingContains(winningPlayer)) {
             Double[] playerRating = {1500.0, 350.0, 0.06};
             winningPlayer.setRating(playerRating);
             ratings.addNewPlayer(winningPlayer, playerRating);
+            noOfTitles.put(winningPlayer, 0);
         }
 
         if (!ratings.rakingContains(losingPlayer)) {
             Double[] playerRating = {1500.0, 350.0, 0.06};
             losingPlayer.setRating(playerRating);
             ratings.addNewPlayer(losingPlayer, playerRating);
+            noOfTitles.put(losingPlayer, 0);
         }
     }
 
@@ -314,5 +315,40 @@ public class MatchlyUpdater {
             return higherAlph ? -1 : -2;
         }
 
+    }
+
+    private Map<String, Double> getLossWeights() {
+        Map<String, Double> map = new HashMap<>();
+
+        map.put("RR", 0.7);
+        map.put("BR", 0.7);
+        map.put("R128", 0.4);
+        map.put("R64", 0.5);
+        map.put("R32", 0.6);
+        map.put("R16", 0.7);
+        map.put("QF", 0.80);
+        map.put("SF", 0.90);
+        map.put("F", 1.0);
+
+        return map;
+    }
+
+    private Map<String, Double> getTourneyWeights() {
+        Map<String, Double> map = new HashMap<>();
+
+//        map.put("D", 1.0);
+//        map.put("A", 1.50);
+//        map.put("M", 2.0);
+//        map.put("C", 2.0);
+//        map.put("F", 2.0);
+//        map.put("G", 4.0);
+
+        map.put("D", 0.7);
+        map.put("A", 0.7);
+        map.put("M", 0.8);
+        map.put("C", 0.9);
+        map.put("F", 0.9);
+        map.put("G", 1.0);
+        return map;
     }
 }

@@ -1,14 +1,18 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
 
 import java.io.*;
-import java.util.*;
-
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by bartu on 17/04/2019.
+ * Created by bartu on 24/05/2019.
  */
-
-public class FileReader {
+public class BetFileReader {
 
     Ratings ratings;
     Ratings clayRatings;
@@ -18,18 +22,15 @@ public class FileReader {
     private Predictor predictor;
     private SetPredictor setPredictor;
     private ScoreCalculator scoreCalculator;
-    private DBHandler dbhandler;
 
-    Map<String, Double> matchWinWeights = getWinWeights();
-    Map<String, Double> matchLossWeights = getLossWeights();
+    Map<String, Double> matchWinWeights = getWinWeigths();
     Map<String, Double> tournyWeigths = getTourneyWeights();
     Map<String, Double> tournySize = getTournySize();
 
     Map<H2H, Integer[]> h2HMap = new HashMap<>();
     Map<Player, Integer> noOfTitles = new HashMap<>();
 
-
-    public FileReader(Predictor predictor, SetPredictor setPredictor) {
+    public BetFileReader(Predictor predictor, SetPredictor setPredictor) {
         ratings= new Ratings();
         clayRatings = new Ratings();
         grassRatings = new Ratings();
@@ -38,7 +39,6 @@ public class FileReader {
         this.predictor = predictor;
         this.setPredictor = setPredictor;
         this.scoreCalculator = new ScoreCalculator();
-        this.dbhandler = new DBHandler();
     }
 
     //Here we need to read and create ranking for all players
@@ -49,34 +49,46 @@ public class FileReader {
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ",";
-        String csvFile = "match_data/atp_matches_" + Integer.toString(year) + ".csv";
+        String xlsxFile = "match_data_bet/" + Integer.toString(year) + ".xls";
 
         try {
 
-            br = new BufferedReader(new java.io.FileReader(csvFile));
+            File excelFile = new File(xlsxFile);
+            FileInputStream fs = new FileInputStream(excelFile);
+            Workbook wb = Workbook.getWorkbook(fs);
+
+            Sheet sh = wb.getSheet(Integer.toString(year));
+            int totalNoOfRows = sh.getRows();
+
+            br = new BufferedReader(new java.io.FileReader(xlsxFile));
             //Remove first line(headers of table)
             br.readLine();
             //We do not know the first week so we want to start with empty
-            String currDate = "";
+            LocalDate currLD = LocalDate.MAX;
             String prevSurf = "";
 
 
-            while ((line = br.readLine()) != null) {
+            for (int rowNo = 1; rowNo < totalNoOfRows; rowNo++) {
 
                 // use comma as separator
-                String[] entry = line.split(cvsSplitBy);
+                Cell[] row = sh.getRow(rowNo) ;
                 //Davis Cup, ATP Tour Challanger Skip
 
-                if (entry.length == 0 || entry[4].equals("D") || entry[3].equals("9")) {
+                if (row.length == 0) {
                     continue;
                 }
 
+                //In bet files dates are given per day, we need to find the monday
+                String[] dateString = row[3].getContents().split("/");
+                LocalDate ld = LocalDate.of(Integer.parseInt(dateString[2]), Integer.parseInt(dateString[1]), Integer.parseInt(dateString[0]));
+                ld = ld.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
                 //If date has changed we need to update ratings
                 //We need to also reset opponents & scores tables
-                if (currDate.equals("")) {
-                    currDate = entry[5];
-                    prevSurf = entry[2];
-                } else if (!currDate.equals(entry[5])) {
+                if (currLD.equals(LocalDate.MAX)) {
+                    currLD = ld;
+                    prevSurf = row[6].getContents();
+                } else if (!ld.equals(currLD)) {
                     ratings.updateRatings();
                     ratings.clearMaps();
 
@@ -95,15 +107,15 @@ public class FileReader {
                         hardRatings.clearMaps();
                     }
 
-                    currDate = entry[5];
-                    prevSurf = entry[2];
+                    currLD = ld;
+                    prevSurf = row[6].getContents();
                 }
 
-                Player winningPlayer = new Player(Integer.parseInt(entry[7]), entry[10], entry[13]);
-                Player losingPlayer = new Player(Integer.parseInt(entry[17]), entry[20], entry[23]);
+                Player winningPlayer = new Player(row[9].getContents());
+                Player losingPlayer = new Player(row[10].getContents());
                 Double[] winnerSurfRatings;
                 Double[] loserSurfRatings;
-                String surface = entry[2];
+                String surface = row[6].getContents();
 
                 checkRatingExists(winningPlayer, losingPlayer, ratings);
 
@@ -123,7 +135,7 @@ public class FileReader {
                     loserSurfRatings = hardRatings.getRanking(losingPlayer);
                 }
 
-                if (entry[29].equals("F")) {
+                if (row[7].getContents().equals("F")) {
                     putTitleWin(winningPlayer);
                 }
 
@@ -138,8 +150,10 @@ public class FileReader {
                     lowerTitles = noOfTitles.get(winningPlayer);
                 }
 
-                double score = scoreCalculator.calcGameNormalised(entry[27]);
-                double winnerScore = score/2 + tournyWeigths.get(entry[4])/3 + matchLossWeights.get(entry[29])/3;
+                double score = scoreCalculator.calcScoreGameDivivded(row[15].getContents(), row[16].getContents(), row[17].getContents(),
+                        row[18].getContents(), row[19].getContents(), row[20].getContents(), row[21].getContents(), row[22].getContents(),
+                        row[23].getContents(), row[24].getContents());
+                double winnerScore = score/2 + tournyWeigths.get(row[4].getContents())/3 + matchWinWeights.get(row[7].getContents())/3;
                 winnerScore = winnerScore > 1 ? 1 : winnerScore;
                 double loserScore = (1-score)/2;
                 loserScore = loserScore > 0.5 ? 0.5 : loserScore;
@@ -170,30 +184,28 @@ public class FileReader {
                 if(predictFlag) {
 //                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
-//                    if (!entry[1].equals("Australian Open")) {
+//                    if (!row[2].getContents().equals("Australian Open")) {
 //                        continue;
 //                    }
 
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
                     predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                               winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, Double.parseDouble(entry[14]));
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0);
 
                     //FOR SET PREDICTION
-                    if (!entry[4].equals("G")) {
+                    if (!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
                         setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                                winnerSurfRatings, loserSurfRatings, h2h, Integer.parseInt(row[25].getContents()) + Integer.parseInt(row[26].getContents()));
                     }
                 } else {
-                    if (!entry[24].equals("")) {
-                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, Double.parseDouble(entry[24]));
-                    }
+                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0);
 
                     //FOR SET PREDICTION
-                    if(!entry[4].equals("G")) {
+                    if(!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
                         setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                                winnerSurfRatings, loserSurfRatings, h2h, Integer.parseInt(row[25].getContents()) + Integer.parseInt(row[26].getContents()));
                     }
                 }
             }
@@ -281,42 +293,18 @@ public class FileReader {
         }
     }
 
-    private Map<String, Double> getWinWeights() {
+
+    private Map<String, Double> getWinWeigths() {
         Map<String, Double> map = new HashMap<>();
 
-//        map.put("RR", 1.0);
-//        map.put("R128", 1.0);
-//        map.put("R64", 1.20);
-//        map.put("R32", 1.50);
-//        map.put("R16", 2.0);
-//        map.put("QF", 2.50);
-//        map.put("SF", 3.0);
-//        map.put("F", 4.0);
-
-        map.put("RR", 0.40);
-        map.put("R128", 0.30);
-        map.put("R64", 0.30);
-        map.put("R32", 0.35);
-        map.put("R16", 0.35);
-        map.put("QF", 0.40);
-        map.put("SF", 0.45);
-        map.put("F", 0.50);
-
-        return map;
-    }
-
-    private Map<String, Double> getLossWeights() {
-        Map<String, Double> map = new HashMap<>();
-
-        map.put("RR", 0.7);
-        map.put("BR", 0.7);
-        map.put("R128", 0.4);
-        map.put("R64", 0.5);
-        map.put("R32", 0.6);
-        map.put("R16", 0.7);
-        map.put("QF", 0.80);
-        map.put("SF", 0.90);
-        map.put("F", 1.0);
+        map.put("Round Robin", 0.7);
+        map.put("1st Round", 0.4);
+        map.put("2nd Round", 0.4);
+        map.put("3rd Round", 0.6);
+        map.put("4th Round", 0.7);
+        map.put("Quarterfinals", 0.80);
+        map.put("Semifinals", 0.90);
+        map.put("The Final", 1.0);
 
         return map;
     }
@@ -324,19 +312,17 @@ public class FileReader {
     private Map<String, Double> getTourneyWeights() {
         Map<String, Double> map = new HashMap<>();
 
-//        map.put("D", 1.0);
-//        map.put("A", 1.50);
-//        map.put("M", 2.0);
-//        map.put("C", 2.0);
-//        map.put("F", 2.0);
-//        map.put("G", 4.0);
+        map.put("ATP250", 0.7);
+        map.put("ATP500", 0.75);
+        map.put("Masters 1000", 0.8);
+        map.put("Masters Cup", 0.9);
+        map.put("Grand Slam", 1.0);
 
-        map.put("D", 0.7);
-        map.put("A", 0.7);
-        map.put("M", 0.8);
-        map.put("C", 0.9);
-        map.put("F", 0.9);
-        map.put("G", 1.0);
+        map.put("International", 0.7);
+        map.put("International Gold", 0.75);
+        map.put("Masters", 0.8);
+        map.put("Masters Cup", 0.9);
+        map.put("Grand Slam", 1.0);
         return map;
     }
 
@@ -356,5 +342,4 @@ public class FileReader {
         map.put("128", 3.0);
         return map;
     }
-
 }

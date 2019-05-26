@@ -9,6 +9,7 @@ public class Ratings {
     private HashMap<Player, Double[]> rankings;
     private HashMap<Player, List<Double[]>> opponents;
     private HashMap<Player, List<Double>> scores;
+    private HashMap<Player, Integer> timeNotPlayed;
 
     private Glicko2 rater;
     private CSVWriter writer;
@@ -17,6 +18,7 @@ public class Ratings {
         rankings = new HashMap<>();
         opponents = new HashMap<>();
         scores = new HashMap<>();
+        timeNotPlayed = new HashMap<>();
         rater = new Glicko2();
         writer = new CSVWriter();
     }
@@ -39,8 +41,23 @@ public class Ratings {
                 Double[] newRating = rater.updateUnplayedPlayer(glicko2Rating);
                 Double[] convertedBack = rater.convertBack(newRating);
                 rankings.put(ranking.getKey(), convertedBack);
+                if (!timeNotPlayed.containsKey(ranking.getKey())) {
+                    timeNotPlayed.put(ranking.getKey(), 1);
+                } else {
+                    int times = timeNotPlayed.get(ranking.getKey());
+                    times++;
+                    if (times >= 52) {
+                        Double[] playerRating = ranking.getValue();
+                        playerRating[0] = playerRating[0] * 0.97;
+                        rankings.put(ranking.getKey(), playerRating);
+                    }
+                    timeNotPlayed.put(ranking.getKey(), times);
+                }
                 continue;
             }
+
+
+            timeNotPlayed.put(ranking.getKey(), 0);
 
             Double v = rater.calcV(glicko2Rating, rivalRatings);
 
