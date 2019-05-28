@@ -207,7 +207,7 @@ public class MatchlyUpdater {
                 predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                         winnerSurfRatings,loserSurfRatings);
                 predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0);
 
                 //FOR SET PREDICTION
                 if (!entry[4].equals("G")) {
@@ -216,7 +216,7 @@ public class MatchlyUpdater {
                 }
             } else {
                 predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0);
 
                 //FOR SET PREDICTION
                 if(!entry[4].equals("G")) {

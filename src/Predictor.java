@@ -3,10 +3,8 @@
  */
 
 import weka.classifiers.*;
-import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.MultilayerPerceptron;
 
-import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.*;
 import java.util.ArrayList;
@@ -63,10 +61,16 @@ public class Predictor {
         attrs.add(att14);
         Attribute att15 = new Attribute("lowerTitles");
         attrs.add(att15);
-        Attribute att16 = new Attribute("age");
+        Attribute att16 = new Attribute("higherAge");
         attrs.add(att16);
-        Attribute att17 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        Attribute att17 = new Attribute("lowerAge");
         attrs.add(att17);
+        Attribute att18 = new Attribute("higherMomentum");
+        attrs.add(att18);
+        Attribute att19 = new Attribute("lowerMomentum");
+        attrs.add(att19);
+        Attribute att20 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        attrs.add(att20);
 
         dataset = new Instances("train", attrs, 10000);
         dataset.setClassIndex(dataset.numAttributes()-1);
@@ -78,8 +82,9 @@ public class Predictor {
     }
 
     public void addToDataset(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
-                             double h2h, int higherTitles, int lowerTitles, double age) {
-        Instance inst = new DenseInstance(17);
+                             double h2h, int higherTitles, int lowerTitles, double higherAge, double lowerAge,
+                             double higherMomentum, double lowerMomentum) {
+        Instance inst = new DenseInstance(20);
         inst.setDataset(dataset);
 
         Double[] higher = winningPlayer[0]  > losingPlayer[0] ? winningPlayer : losingPlayer;
@@ -110,17 +115,20 @@ public class Predictor {
 //        inst.setValue(12, h2h);
 //        inst.setValue(13, higherTitles);
 //        inst.setValue(14, lowerTitles);
-        inst.setValue(15, age);
-
-        inst.setValue(16, higher.equals(winningPlayer) ? "1" : "0");
+        inst.setValue(15, higherAge);
+        inst.setValue(16, lowerAge);
+        inst.setValue(17, higherMomentum);
+        inst.setValue(18, lowerMomentum);
+        inst.setValue(19, higher.equals(winningPlayer) ? "1" : "0");
 
 
         dataset.add(inst);
     }
 
     public void addToTest(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
-                          Double h2h, int higherTitles, int lowerTitles, double age) {
-        Instance inst = new DenseInstance(17);
+                          Double h2h, int higherTitles, int lowerTitles, double higherAge, double lowerAge,
+                          double higherMomentum, double lowerMomentum) {
+        Instance inst = new DenseInstance(20);
         inst.setDataset(test);
 
         Double[] higher = winningPlayer[0] > losingPlayer[0] ? winningPlayer : losingPlayer;
@@ -151,26 +159,29 @@ public class Predictor {
 //        inst.setValue(12, h2h);
 //        inst.setValue(13, higherTitles);
 //        inst.setValue(14, lowerTitles);
-        inst.setValue(15, age);
-
-        inst.setValue(16, higher.equals(winningPlayer) ? "1" : "0");
+        inst.setValue(15, higherAge);
+        inst.setValue(16, lowerAge);
+        inst.setValue(17, higherMomentum);
+        inst.setValue(18, lowerMomentum);
+        inst.setValue(19, higher.equals(winningPlayer) ? "1" : "0");
 
         test.add(inst);
     }
 
     public Classifier trainClassifier() throws Exception {
-//        RandomForest classifier = new RandomForest();
-//        classifier.buildClassifier(dataset);
+        RandomForest classifier = new RandomForest();
+        classifier.setMaxDepth(10);
+        classifier.buildClassifier(dataset);
 
-        MultilayerPerceptron mlp = new MultilayerPerceptron();
-        mlp.setLearningRate(0.1);
-        mlp.setMomentum(0.2);
-        mlp.setTrainingTime(1500);
-        mlp.setHiddenLayers("1");
-        mlp.buildClassifier(dataset);
-        weka.core.SerializationHelper.write("RG_mlp.model", mlp);
+//        MultilayerPerceptron mlp = new MultilayerPerceptron();
+//        mlp.setLearningRate(0.1);
+//        mlp.setMomentum(0.2);
+//        mlp.setTrainingTime(1500);
+//        mlp.setHiddenLayers("1");
+//        mlp.buildClassifier(dataset);
+//        weka.core.SerializationHelper.write("RG_mlp.model", mlp);
 
-        return mlp;
+        return classifier;
     }
 
     public void eval(Classifier cls) throws Exception {

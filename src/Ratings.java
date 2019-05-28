@@ -1,3 +1,5 @@
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
 import java.util.*;
 
 /**
@@ -7,6 +9,7 @@ import java.util.*;
 public class Ratings {
 
     private HashMap<Player, Double[]> rankings;
+    private HashMap<Player, Queue<Double>> momentumMap;
     private HashMap<Player, List<Double[]>> opponents;
     private HashMap<Player, List<Double>> scores;
     private HashMap<Player, Integer> timeNotPlayed;
@@ -16,6 +19,7 @@ public class Ratings {
 
     public Ratings() {
         rankings = new HashMap<>();
+        momentumMap = new HashMap<>();
         opponents = new HashMap<>();
         scores = new HashMap<>();
         timeNotPlayed = new HashMap<>();
@@ -35,6 +39,7 @@ public class Ratings {
         //turn Rankings into Glicko-2 scale
         for (Map.Entry<Player, Double[]> ranking : rankings.entrySet()) {
             Double[] glicko2Rating = ranking.getValue();
+            double originalR = glicko2Rating[0]*173.7178+ 1500;
             List<Double[]> rivalRatings = opponents.get(ranking.getKey());
 
             if (rivalRatings.isEmpty()) {
@@ -47,11 +52,13 @@ public class Ratings {
                     int times = timeNotPlayed.get(ranking.getKey());
                     times++;
                     if (times >= 52) {
-                        Double[] playerRating = ranking.getValue();
-                        playerRating[0] = playerRating[0] * 0.97;
-                        rankings.put(ranking.getKey(), playerRating);
+//                        Double[] playerRating = ranking.getValue();
+//                        playerRating[0] = playerRating[0] * 0.97;
+                        rankings.remove(ranking.getKey());
+                        timeNotPlayed.remove(ranking.getKey());
+                        scores.remove(ranking.getKey());
+                        opponents.remove(ranking.getKey());
                     }
-                    timeNotPlayed.put(ranking.getKey(), times);
                 }
                 continue;
             }
@@ -70,6 +77,17 @@ public class Ratings {
             Double[] newRatings = rater.updateRating(v, scores.get(ranking.getKey()), glicko2Rating, rivalRatings, newRD, newVol);
 
             Double[] convertedBack = rater.convertBack(newRatings);
+
+//            double momentum = momentumMap.get(ranking.getKey());
+//
+//            momentum += originalR;
+//            momentum -= convertedBack[0];
+
+            double momentum = convertedBack[0] - originalR ;
+            Queue<Double> momentums = momentumMap.get(ranking.getKey());
+            momentums.add(momentum);
+
+            momentumMap.put(ranking.getKey(), momentums);
 
             rankings.put(ranking.getKey(), convertedBack);
         }
@@ -135,6 +153,8 @@ public class Ratings {
 
     public void addNewPlayer(Player player, Double[] playerRating) {
         rankings.put(player, playerRating);
+        Queue<Double> fifo = new CircularFifoQueue<Double>(5);
+        momentumMap.put(player, fifo);
 
         //Add player to hashmap of scores and opponents
         opponents.put(player, new LinkedList<>());
@@ -143,6 +163,10 @@ public class Ratings {
 
     public Double[] getRanking(Player player) {
         return rankings.get(player);
+    }
+
+    public Queue<Double> getMomentum(Player player) {
+        return momentumMap.get(player);
     }
 
     public void fillMaps(Player winningPlayer, Player losingPlayer, Double winnerScore, Double loserScore) {
@@ -208,8 +232,7 @@ public class Ratings {
 
         for (Map.Entry<Player, Double[]> ranking : rankings.entrySet()) {
             if (!playedThisWeek.contains(ranking.getKey())) {
-                Double[] glicko2Rating = ranking.getValue();
-                 glicko2Rating = rater.convertGlicko2(ranking.getValue());
+                Double[] glicko2Rating = rater.convertGlicko2(ranking.getValue());
                 Double[] newRating = rater.updateUnplayedPlayer(glicko2Rating);
                 Double[] convertedBack = rater.convertBack(newRating);
                 rankings.put(ranking.getKey(), convertedBack);

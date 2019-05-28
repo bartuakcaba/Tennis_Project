@@ -8,7 +8,7 @@ import java.util.List;
 public class Glicko2 {
 
 
-    private static double SYS_CONSTANT  = 0.3; //Between 0.3 and 1.2
+    private static double SYS_CONSTANT  = 1.2; //Between 0.3 and 1.2
     private static double CONV_TOLERANCE = 0.000001;
 
     public Double[] convertGlicko2(Double[] rating) {

@@ -1,4 +1,8 @@
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.*;
 import java.util.*;
@@ -27,6 +31,10 @@ public class FileReader {
 
     Map<H2H, Integer[]> h2HMap = new HashMap<>();
     Map<Player, Integer> noOfTitles = new HashMap<>();
+    List<Double[]> titleWinners = new ArrayList<>();
+    List<String> witleNames = new ArrayList<>();
+    Map<Double, Double> avgTitle = new HashMap<>();
+    Map<Double, Integer> titleNo = new HashMap<>();
 
 
     public FileReader(Predictor predictor, SetPredictor setPredictor) {
@@ -127,17 +135,6 @@ public class FileReader {
                     putTitleWin(winningPlayer);
                 }
 
-                int higherTitles;
-                int lowerTitles;
-
-                if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
-                    higherTitles = noOfTitles.get(winningPlayer);
-                    lowerTitles = noOfTitles.get(losingPlayer);
-                } else {
-                    higherTitles = noOfTitles.get(losingPlayer);
-                    lowerTitles = noOfTitles.get(winningPlayer);
-                }
-
                 double score = scoreCalculator.calcGameNormalised(entry[27]);
                 double winnerScore = score/2 + tournyWeigths.get(entry[4])/3 + matchLossWeights.get(entry[29])/3;
                 winnerScore = winnerScore > 1 ? 1 : winnerScore;
@@ -157,6 +154,7 @@ public class FileReader {
                 ratings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
 
 
+
                 if (surface.equals("Clay")) {
                     clayRatings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
                 } else if (surface.equals("Grass")) {
@@ -166,18 +164,48 @@ public class FileReader {
                     hardRatings.fillMaps(winningPlayer, losingPlayer, winnerScore, loserScore);
                 }
 
+                //Can't use for ml model
+                if (entry[14].equals("") || entry[24].equals("")) {
+                    continue;
+                }
+
+                int higherTitles;
+                int lowerTitles;
+                double higherAge;
+                double lowerAge;
+                double higherMomentum;
+                double lowerMomentum;
+
+
+                if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
+                    higherTitles = noOfTitles.get(winningPlayer);
+                    lowerTitles = noOfTitles.get(losingPlayer);
+                    higherAge = Double.parseDouble(entry[14]);
+                    lowerAge = Double.parseDouble(entry[24]);
+                    higherMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
+                    lowerMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
+                } else {
+                    higherTitles = noOfTitles.get(losingPlayer);
+                    lowerTitles = noOfTitles.get(winningPlayer);
+                    higherAge = Double.parseDouble(entry[24]);
+                    lowerAge = Double.parseDouble(entry[14]);
+                    higherMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
+                    lowerMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
+                }
+
 
                 if(predictFlag) {
-//                    predictor.predictSingleMatch(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer));
 
-//                    if (!entry[1].equals("Australian Open")) {
+//                    if (!entry[1].equals("Us Open")) {
 //                        continue;
 //                    }
 
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
                     predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                               winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, Double.parseDouble(entry[14]));
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
+                            higherMomentum, lowerMomentum);
+
 
                     //FOR SET PREDICTION
                     if (!entry[4].equals("G")) {
@@ -185,10 +213,10 @@ public class FileReader {
                                 winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
                     }
                 } else {
-                    if (!entry[24].equals("")) {
-                        predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, Double.parseDouble(entry[24]));
-                    }
+                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
+                            higherMomentum, lowerMomentum);
+
 
                     //FOR SET PREDICTION
                     if(!entry[4].equals("G")) {
@@ -196,6 +224,23 @@ public class FileReader {
                                 winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
                     }
                 }
+
+//                    double age = Math.floor(Double.parseDouble(entry[14]));
+//
+//                    if (avgTitle.containsKey(age)) {
+//                        double avg = avgTitle.get(age);
+//                        int no = titleNo.get(age);
+//                        avg *= no;
+//                        no++;
+//                        avg += ratings.getRanking(winningPlayer)[0];
+//                        avg = avg / no;
+//                        avgTitle.put(age, avg);
+//                        titleNo.put(age, no);
+//                    } else {
+//                        avgTitle.put(age, ratings.getRanking(winningPlayer)[0]);
+//                        titleNo.put(age, 1);
+//
+//                }
             }
 
             //Final ratings update
@@ -355,6 +400,38 @@ public class FileReader {
         map.put("96", 2.0);
         map.put("128", 3.0);
         return map;
+    }
+
+    public void writeTitleWInners() {
+        try {
+            Workbook workbook = new HSSFWorkbook();
+            Sheet sheet = workbook.createSheet("new sheet");
+
+            int i = 0;
+            for (Map.Entry<Double, Double> entry : avgTitle.entrySet()) {
+                Row row = sheet.createRow(i);
+                row.createCell(0).setCellValue(entry.getKey());
+                row.createCell(1).setCellValue(entry.getValue());
+                i++;
+            }
+
+            FileOutputStream fileOut = new FileOutputStream("titles.csv");
+            workbook.write(fileOut);
+            fileOut.close();
+        } catch (Exception ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private double calculateMomentum(Queue<Double> momentums) {
+        double momentumSum = 0;
+        Iterator<Double> platesListIterator = momentums.iterator();
+        while (platesListIterator.hasNext()) {
+            Double entry = platesListIterator.next();
+            momentumSum += entry;
+        }
+
+        return momentumSum;
     }
 
 }
