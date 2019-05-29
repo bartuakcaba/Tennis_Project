@@ -2,11 +2,17 @@
  * Created by bartu on 28/04/2019.
  */
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import weka.classifiers.*;
 import weka.classifiers.functions.MultilayerPerceptron;
 
 import weka.classifiers.trees.RandomForest;
 import weka.core.*;
+
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +27,7 @@ public class Predictor {
     Instances test;
     private CSVWriter writer;
     private Classifier classifier;
+    List<Double[]> testMomentums = new ArrayList<>();
 
 
     public Predictor() {
@@ -164,6 +171,7 @@ public class Predictor {
         inst.setValue(17, higherMomentum);
         inst.setValue(18, lowerMomentum);
         inst.setValue(19, higher.equals(winningPlayer) ? "1" : "0");
+        testMomentums.add(new Double[]{higherMomentum, lowerMomentum});
 
         test.add(inst);
     }
@@ -173,13 +181,13 @@ public class Predictor {
         classifier.setMaxDepth(10);
         classifier.buildClassifier(dataset);
 
-//        MultilayerPerceptron mlp = new MultilayerPerceptron();
-//        mlp.setLearningRate(0.1);
-//        mlp.setMomentum(0.2);
-//        mlp.setTrainingTime(1500);
-//        mlp.setHiddenLayers("1");
-//        mlp.buildClassifier(dataset);
-//        weka.core.SerializationHelper.write("RG_mlp.model", mlp);
+//        MultilayerPerceptron classifier = new MultilayerPerceptron();
+//        classifier.setLearningRate(0.1);
+//        classifier.setMomentum(0.2);
+//        classifier.setTrainingTime(1500);
+//        classifier.setHiddenLayers("1");
+//        classifier.buildClassifier(dataset);
+//        weka.core.SerializationHelper.write("RG_mlp.model", classifier);
 
         return classifier;
     }
@@ -188,6 +196,38 @@ public class Predictor {
         Evaluation eval1 = new Evaluation(dataset);
 
         eval1.evaluateModel(cls, test);
+
+//        try {
+//            Workbook workbook = new HSSFWorkbook();
+//            Sheet sheet = workbook.createSheet("new sheet");
+//
+//            Row row = sheet.createRow(0);
+//            row.createCell(0).setCellValue("Higher Momentum");
+//            row.createCell(1).setCellValue("Lower Momentum");
+//            row.createCell(2).setCellValue("Predicted");
+//
+//            int i = 1;
+//            int j = 0;
+//            for (Instance inst : test) {
+//                Double prd = eval1.evaluateModelOnceAndRecordPrediction(cls, inst);
+//                if (prd != inst.classValue()) {
+//                    Row row1 = sheet.createRow(i);
+//                    row1.createCell(0).setCellValue(testMomentums.get(j)[0]);
+//                    row1.createCell(1).setCellValue(testMomentums.get(j)[1]);
+//                    row1.createCell(2).setCellValue(prd);
+//
+//                    i++;
+//                }
+//                j++;
+//
+//            }
+//            FileOutputStream fileOut = new FileOutputStream("momentumPredictions.xls");
+//            workbook.write(fileOut);
+//            fileOut.close();
+//        } catch (Exception ioe) {
+//            ioe.printStackTrace();
+//        }
+
         System.out.println(eval1.toSummaryString("\nResults\n======\n", false));
     }
 

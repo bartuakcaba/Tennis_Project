@@ -431,6 +431,14 @@ public class FileReader {
             momentumSum += entry;
         }
 
+//        if (-100 <= momentumSum && momentumSum <= 100 ) {
+//            return 0;
+//        } else if ( momentumSum < -100) {
+//            return  -1;
+//        } else {
+//            return 1;
+//        }
+
         return momentumSum;
     }
 

@@ -106,6 +106,7 @@ public class Ratings {
         //turn Rankings into Glicko-2 scale
         for (Map.Entry<Player, Double[]> ranking : rankings.entrySet()) {
             Double[] glicko2Rating = ranking.getValue();
+            double originalR = glicko2Rating[0]*173.7178+ 1500;
             List<Double[]> rivalRatings = opponents.get(ranking.getKey());
 
             if (rivalRatings.isEmpty()) {
@@ -124,6 +125,12 @@ public class Ratings {
             Double[] newRatings = rater.updateRating(v, scores.get(ranking.getKey()), glicko2Rating, rivalRatings, newRD, newVol);
 
             Double[] convertedBack = rater.convertBack(newRatings);
+
+            double momentum = convertedBack[0] - originalR ;
+            Queue<Double> momentums = momentumMap.get(ranking.getKey());
+            momentums.add(momentum);
+
+            momentumMap.put(ranking.getKey(), momentums);
 
             rankings.put(ranking.getKey(), convertedBack);
         }
@@ -153,7 +160,7 @@ public class Ratings {
 
     public void addNewPlayer(Player player, Double[] playerRating) {
         rankings.put(player, playerRating);
-        Queue<Double> fifo = new CircularFifoQueue<Double>(5);
+        Queue<Double> fifo = new CircularFifoQueue<Double>(8);
         momentumMap.put(player, fifo);
 
         //Add player to hashmap of scores and opponents

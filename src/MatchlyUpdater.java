@@ -186,19 +186,37 @@ public class MatchlyUpdater {
 
             double h2h = getH2H(winningPlayer, losingPlayer);
 
+            //Can't use for ml model
+            if (entry[14].equals("") || entry[24].equals("")) {
+                continue;
+            }
+
             if (entry[29].equals("F")) {
                 putTitleWin(winningPlayer);
             }
 
             int higherTitles;
             int lowerTitles;
+            double higherAge;
+            double lowerAge;
+            double higherMomentum;
+            double lowerMomentum;
+
 
             if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
                 higherTitles = noOfTitles.get(winningPlayer);
                 lowerTitles = noOfTitles.get(losingPlayer);
+                higherAge = Double.parseDouble(entry[14]);
+                lowerAge = Double.parseDouble(entry[24]);
+                higherMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
+                lowerMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
             } else {
                 higherTitles = noOfTitles.get(losingPlayer);
                 lowerTitles = noOfTitles.get(winningPlayer);
+                higherAge = Double.parseDouble(entry[24]);
+                lowerAge = Double.parseDouble(entry[14]);
+                higherMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
+                lowerMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
             }
 
             if(predictFlag) {
@@ -207,7 +225,7 @@ public class MatchlyUpdater {
                 predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                         winnerSurfRatings,loserSurfRatings);
                 predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge,lowerAge,higherMomentum,lowerMomentum);
 
                 //FOR SET PREDICTION
                 if (!entry[4].equals("G")) {
@@ -216,7 +234,7 @@ public class MatchlyUpdater {
                 }
             } else {
                 predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge,lowerAge,higherMomentum,lowerMomentum);
 
                 //FOR SET PREDICTION
                 if(!entry[4].equals("G")) {
@@ -350,5 +368,22 @@ public class MatchlyUpdater {
         map.put("F", 0.9);
         map.put("G", 1.0);
         return map;
+    }
+
+    private double calculateMomentum(Queue<Double> momentums) {
+        double momentumSum = 0;
+        Iterator<Double> platesListIterator = momentums.iterator();
+        while (platesListIterator.hasNext()) {
+            Double entry = platesListIterator.next();
+            momentumSum += entry;
+        }
+
+        if (-100 <= momentumSum && momentumSum <= 100 ) {
+            return 0;
+        } else if ( momentumSum < -100) {
+            return  -1;
+        } else {
+            return 1;
+        }
     }
 }

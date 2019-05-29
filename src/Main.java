@@ -1,6 +1,5 @@
 import weka.classifiers.Classifier;
 
-import java.io.File;
 
 /**
  * Created by bartu on 24/02/2019.
@@ -16,7 +15,7 @@ public class Main {
 
         FileReader r = new FileReader(p, sp);
 
-        while (year < 2018) {
+        while (year < 2019) {
             System.out.println(year);
             r.readData(year, false);
             year++;
@@ -36,7 +35,7 @@ public class Main {
         System.out.print(p.calculateAccuracy());
 
 //        IndividualPredictor ip = new IndividualPredictor();
-//        ip.getPrediction("Caruso S.", "Simon G.");
+//        ip.getPrediction("Cuevas P.", "Edmund K.");
 
     }
 }

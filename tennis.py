@@ -32,10 +32,14 @@ def label_point(x, y, val, ax):
         	ax.text(point['x'], point['y'], str(point['val']))	
 
 def plot_histogram(): 
-		file = r'titles.csv'
+		file = r'momentumPredictions.xls'
 		df = pd.read_excel(file)
-		df.plot(x='Age', y='Rating', kind='line')
-		plt.xticks(np.arange(16, 40, 1.0))
+
+		mom = df['Lower Momentum']
+		df['Lower'] = mom.where(df['Predicted'] == 0)
+		df['Lower'].hist(bins=[-300, -200, -100, 0, 100, 200, 300])
+		plt.xlabel('Rating Momentum of Lower Ranked Player')
+		plt.ylabel('Frequency')
 		plt.show()
 
 def plot_sys_constant(): 
