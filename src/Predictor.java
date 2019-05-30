@@ -76,8 +76,12 @@ public class Predictor {
         attrs.add(att18);
         Attribute att19 = new Attribute("lowerMomentum");
         attrs.add(att19);
-        Attribute att20 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        Attribute att20 = new Attribute("higherCountry");
         attrs.add(att20);
+        Attribute att21 = new Attribute("lowerCountry");
+        attrs.add(att21);
+        Attribute att22 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        attrs.add(att22);
 
         dataset = new Instances("train", attrs, 10000);
         dataset.setClassIndex(dataset.numAttributes()-1);
@@ -90,8 +94,8 @@ public class Predictor {
 
     public void addToDataset(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
                              double h2h, int higherTitles, int lowerTitles, double higherAge, double lowerAge,
-                             double higherMomentum, double lowerMomentum) {
-        Instance inst = new DenseInstance(20);
+                             double higherMomentum, double lowerMomentum, int higherCountry, int lowerCountry) {
+        Instance inst = new DenseInstance(22);
         inst.setDataset(dataset);
 
         Double[] higher = winningPlayer[0]  > losingPlayer[0] ? winningPlayer : losingPlayer;
@@ -126,7 +130,9 @@ public class Predictor {
         inst.setValue(16, lowerAge);
         inst.setValue(17, higherMomentum);
         inst.setValue(18, lowerMomentum);
-        inst.setValue(19, higher.equals(winningPlayer) ? "1" : "0");
+//        inst.setValue(19, higherCountry);
+//        inst.setValue(20, lowerCountry);
+        inst.setValue(21, higher.equals(winningPlayer) ? "1" : "0");
 
 
         dataset.add(inst);
@@ -134,8 +140,8 @@ public class Predictor {
 
     public void addToTest(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
                           Double h2h, int higherTitles, int lowerTitles, double higherAge, double lowerAge,
-                          double higherMomentum, double lowerMomentum) {
-        Instance inst = new DenseInstance(20);
+                          double higherMomentum, double lowerMomentum, int higherCountry, int lowerCountry) {
+        Instance inst = new DenseInstance(22);
         inst.setDataset(test);
 
         Double[] higher = winningPlayer[0] > losingPlayer[0] ? winningPlayer : losingPlayer;
@@ -170,7 +176,9 @@ public class Predictor {
         inst.setValue(16, lowerAge);
         inst.setValue(17, higherMomentum);
         inst.setValue(18, lowerMomentum);
-        inst.setValue(19, higher.equals(winningPlayer) ? "1" : "0");
+//        inst.setValue(19, higherCountry);
+//        inst.setValue(20, lowerCountry);
+        inst.setValue(21, higher.equals(winningPlayer) ? "1" : "0");
         testMomentums.add(new Double[]{higherMomentum, lowerMomentum});
 
         test.add(inst);
@@ -196,38 +204,6 @@ public class Predictor {
         Evaluation eval1 = new Evaluation(dataset);
 
         eval1.evaluateModel(cls, test);
-
-//        try {
-//            Workbook workbook = new HSSFWorkbook();
-//            Sheet sheet = workbook.createSheet("new sheet");
-//
-//            Row row = sheet.createRow(0);
-//            row.createCell(0).setCellValue("Higher Momentum");
-//            row.createCell(1).setCellValue("Lower Momentum");
-//            row.createCell(2).setCellValue("Predicted");
-//
-//            int i = 1;
-//            int j = 0;
-//            for (Instance inst : test) {
-//                Double prd = eval1.evaluateModelOnceAndRecordPrediction(cls, inst);
-//                if (prd != inst.classValue()) {
-//                    Row row1 = sheet.createRow(i);
-//                    row1.createCell(0).setCellValue(testMomentums.get(j)[0]);
-//                    row1.createCell(1).setCellValue(testMomentums.get(j)[1]);
-//                    row1.createCell(2).setCellValue(prd);
-//
-//                    i++;
-//                }
-//                j++;
-//
-//            }
-//            FileOutputStream fileOut = new FileOutputStream("momentumPredictions.xls");
-//            workbook.write(fileOut);
-//            fileOut.close();
-//        } catch (Exception ioe) {
-//            ioe.printStackTrace();
-//        }
-
         System.out.println(eval1.toSummaryString("\nResults\n======\n", false));
     }
 

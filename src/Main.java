@@ -15,7 +15,7 @@ public class Main {
 
         FileReader r = new FileReader(p, sp);
 
-        while (year < 2019) {
+        while (year < 2018) {
             System.out.println(year);
             r.readData(year, false);
             year++;
@@ -35,7 +35,8 @@ public class Main {
         System.out.print(p.calculateAccuracy());
 
 //        IndividualPredictor ip = new IndividualPredictor();
-//        ip.getPrediction("Cuevas P.", "Edmund K.");
+//        ip.getPrediction("Nishikori K.", "Djere L.");
+
 
     }
 }

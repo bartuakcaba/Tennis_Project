@@ -16,6 +16,7 @@ public class MatchlyUpdater {
     private Predictor predictor;
     private SetPredictor setPredictor;
     private ScoreCalculator scoreCalculator;
+    private DBHandler dbhandler;
 
     Map<H2H, Integer[]> h2HMap = new HashMap<>();
     Map<Integer, String[]> currentTournyEntries = new HashMap<>();
@@ -34,6 +35,7 @@ public class MatchlyUpdater {
         this.predictor = predictor;
         this.setPredictor = setPredictor;
         this.scoreCalculator = new ScoreCalculator();
+        dbhandler = new DBHandler();
     }
 
     public void readData(int year, boolean predictFlag) {
@@ -52,6 +54,7 @@ public class MatchlyUpdater {
             //We do not know the first tournament so we want to start with empty
             String currTournament = "";
             String currDate = "";
+            String currCountry = "";
             String prevSurf = "";
 
             while ((line = br.readLine()) != null) {
@@ -65,11 +68,13 @@ public class MatchlyUpdater {
                     currTournament = entry[0];
                     currentTournyEntries.put(Integer.parseInt(entry[6]), entry);
                     prevSurf = entry[2];
+                    currCountry = dbhandler.getCountry(entry[1]);
                 } else if (!currTournament.equals(entry[0])) {
                     currTournament = entry[0];
-                    updateRatings(predictFlag, prevSurf);
+                    updateRatings(predictFlag, prevSurf, currCountry);
                     currentTournyEntries.clear();
                     currentTournyEntries.put(Integer.parseInt(entry[6]), entry);
+                    currCountry = dbhandler.getCountry(entry[1]);
                     prevSurf = entry[2];
                 } else {
                     currentTournyEntries.put(Integer.parseInt(entry[6]), entry);
@@ -148,7 +153,7 @@ public class MatchlyUpdater {
 
     }
 
-    private void updateRatings(boolean predictFlag, String prevSurf) {
+    private void updateRatings(boolean predictFlag, String prevSurf, String currCountry) {
         Map<Integer,String[]> sortedMap = new TreeMap<>(currentTournyEntries);
 
         for(Map.Entry<Integer, String[]> mapEntry : sortedMap.entrySet()) {
@@ -201,6 +206,8 @@ public class MatchlyUpdater {
             double lowerAge;
             double higherMomentum;
             double lowerMomentum;
+            int higherCountry;
+            int lowerCountry;
 
 
             if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
@@ -210,6 +217,8 @@ public class MatchlyUpdater {
                 lowerAge = Double.parseDouble(entry[24]);
                 higherMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
                 lowerMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
+                higherCountry = entry[13].equals(currCountry) ? 1 : 0;
+                lowerCountry = entry[23].equals(currCountry) ? 1 : 0;
             } else {
                 higherTitles = noOfTitles.get(losingPlayer);
                 lowerTitles = noOfTitles.get(winningPlayer);
@@ -217,6 +226,8 @@ public class MatchlyUpdater {
                 lowerAge = Double.parseDouble(entry[14]);
                 higherMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
                 lowerMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
+                higherCountry = entry[23].equals(currCountry) ? 1 : 0;
+                lowerCountry = entry[13].equals(currCountry) ? 1 : 0;
             }
 
             if(predictFlag) {
@@ -225,7 +236,8 @@ public class MatchlyUpdater {
                 predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                         winnerSurfRatings,loserSurfRatings);
                 predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge,lowerAge,higherMomentum,lowerMomentum);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge,lowerAge,
+                        higherMomentum,lowerMomentum, higherCountry, lowerCountry);
 
                 //FOR SET PREDICTION
                 if (!entry[4].equals("G")) {
@@ -234,7 +246,8 @@ public class MatchlyUpdater {
                 }
             } else {
                 predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge,lowerAge,higherMomentum,lowerMomentum);
+                        winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge,lowerAge,
+                        higherMomentum,lowerMomentum, higherCountry, lowerCountry);
 
                 //FOR SET PREDICTION
                 if(!entry[4].equals("G")) {

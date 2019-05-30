@@ -191,7 +191,7 @@ public class BetFileReader {
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
                     predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0, 0);
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0, 0, 0, 0);
 
                     //FOR SET PREDICTION
                     if (!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
@@ -200,7 +200,7 @@ public class BetFileReader {
                     }
                 } else {
                     predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0);
+                            winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0, 0, 0);
 
                     //FOR SET PREDICTION
                     if(!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {

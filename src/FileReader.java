@@ -66,7 +66,10 @@ public class FileReader {
             br.readLine();
             //We do not know the first week so we want to start with empty
             String currDate = "";
+            String currCountry = "";
             String prevSurf = "";
+            int countryMatches = 0;
+            int allMatches = 0;
 
 
             while ((line = br.readLine()) != null) {
@@ -84,6 +87,7 @@ public class FileReader {
                 if (currDate.equals("")) {
                     currDate = entry[5];
                     prevSurf = entry[2];
+                    currCountry = dbhandler.getCountry(entry[1]);
                 } else if (!currDate.equals(entry[5])) {
                     ratings.updateRatings();
                     ratings.clearMaps();
@@ -105,6 +109,7 @@ public class FileReader {
 
                     currDate = entry[5];
                     prevSurf = entry[2];
+                    currCountry = dbhandler.getCountry(entry[1]);
                 }
 
                 Player winningPlayer = new Player(Integer.parseInt(entry[7]), entry[10], entry[13]);
@@ -113,7 +118,12 @@ public class FileReader {
                 Double[] loserSurfRatings;
                 String surface = entry[2];
 
-                checkRatingExists(winningPlayer, losingPlayer, ratings);
+//                if (entry[1].equals("Wimbledon") && currCountry.equals(entry[23])) {
+//                    countryMatches++;
+//                }
+
+
+                    checkRatingExists(winningPlayer, losingPlayer, ratings);
 
                 if (surface.equals("Clay")) {
                     checkRatingExists(winningPlayer, losingPlayer, clayRatings);
@@ -175,6 +185,8 @@ public class FileReader {
                 double lowerAge;
                 double higherMomentum;
                 double lowerMomentum;
+                int higherCountry;
+                int lowerCountry;
 
 
                 if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
@@ -184,6 +196,8 @@ public class FileReader {
                     lowerAge = Double.parseDouble(entry[24]);
                     higherMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
                     lowerMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
+                    higherCountry = entry[13].equals(currCountry) ? 1 : 0;
+                    lowerCountry = entry[23].equals(currCountry) ? 1 : 0;
                 } else {
                     higherTitles = noOfTitles.get(losingPlayer);
                     lowerTitles = noOfTitles.get(winningPlayer);
@@ -191,20 +205,22 @@ public class FileReader {
                     lowerAge = Double.parseDouble(entry[14]);
                     higherMomentum = calculateMomentum(ratings.getMomentum(losingPlayer));
                     lowerMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
+                    higherCountry = entry[23].equals(currCountry) ? 1 : 0;
+                    lowerCountry = entry[13].equals(currCountry) ? 1 : 0;
                 }
 
 
                 if(predictFlag) {
 
-//                    if (!entry[1].equals("Us Open")) {
-//                        continue;
-//                    }
+                    if (!entry[4].equals("A")) {
+                        continue;
+                    }
 
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
                     predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
-                            higherMomentum, lowerMomentum);
+                            higherMomentum, lowerMomentum, higherCountry, lowerCountry);
 
 
                     //FOR SET PREDICTION
@@ -215,7 +231,7 @@ public class FileReader {
                 } else {
                     predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
-                            higherMomentum, lowerMomentum);
+                            higherMomentum, lowerMomentum, higherCountry, lowerCountry);
 
 
                     //FOR SET PREDICTION
@@ -242,6 +258,8 @@ public class FileReader {
 //
 //                }
             }
+
+//            System.out.println((double)countryMatches/127);
 
             //Final ratings update
             ratings.updateRatings();
@@ -431,15 +449,13 @@ public class FileReader {
             momentumSum += entry;
         }
 
-//        if (-100 <= momentumSum && momentumSum <= 100 ) {
-//            return 0;
-//        } else if ( momentumSum < -100) {
-//            return  -1;
-//        } else {
-//            return 1;
-//        }
-
-        return momentumSum;
+        if (-100 <= momentumSum && momentumSum <= 100 ) {
+            return 0;
+        } else if ( momentumSum < -100) {
+            return  -1;
+        } else {
+            return 1;
+        }
     }
 
 }

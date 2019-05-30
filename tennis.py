@@ -56,3 +56,44 @@ def plot_sys_constant():
 	pylab.legend(loc='best')
 	pylab.show()
 
+def plot_country():
+	au = [10.24, 7.87, 4.72, 3.94]
+	fo = [16.53, 14.17, 7.87, 11.02]	
+	wimb = [7.09, 7.87, 5.51, 1.57]
+	uo = [7.09, 9.45, 8.66, 8.66]
+	index = ['2015', '2016', '2017', '2018']
+	x = [8.24, 9.44, 8.96, 9.64]
+	losers = [8.51, 10.37, 9.76, 9.64]
+	y = [2015, 2016, 2017, 2018]
+
+	df = pd.DataFrame({'Australian Open': au, 'Roland Garros': fo, 'Wimbledon': wimb,'US Open':uo}, index=index)
+
+	df1 = pd.DataFrame({'ATP Tour': x}, index=index)
+	df2 = pd.DataFrame({'Losers that are Native (ATP Tour)': losers}, index=index)
+
+	ax = df1.plot(color='black', linestyle='-', marker='o')
+	df2.plot(color='midnightblue', linestyle='-', marker='o', ax=ax)
+	df.plot(kind='bar', ax=ax)
+	ax.set_xlabel("Year")
+	ax.set_ylabel("% of All Wins by Native Player")
+	plt.show()
+
+def plot_loser_country():
+	fo = [11.02, 12.60, 14.96, 11.81]
+	au = [7.87, 7.09, 8.66, 7.09]	
+	wimb = [7.09, 7.87, 5.51, 1.57]
+	uo = [7.09, 9.45, 8.66, 8.66]
+	index = ['2015', '2016', '2017', '2018']
+	
+	y = [2015, 2016, 2017, 2018]
+
+	df = pd.DataFrame({'Australian Open': au, 'Roland Garros': fo, 'Wimbledon': wimb,'US Open':uo}, index=index)
+
+	df1 = pd.DataFrame({'ATP Tour': x}, index=index)
+
+	ax = df1.plot(color='black', linestyle='-', marker='o')
+	df.plot(kind='bar', ax=ax)
+	ax.set_xlabel("Year")
+	ax.set_ylabel("% of All Wins by Native Player")
+	plt.show()
+	

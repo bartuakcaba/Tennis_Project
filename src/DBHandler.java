@@ -222,4 +222,40 @@ public class DBHandler {
         }
     }
 
+    public String getCountry(String city) {
+        String url = "jdbc:sqlite:sqlite/tennis.db";
+        Connection conn = null;
+        Statement stmt = null;
+
+        String searchQuery = "SELECT Country " +
+                "from " + "Countries " +
+                "where " + "City = ?";
+
+        try {
+
+            conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(searchQuery);
+            pstmt.setString(1, city);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.getString("Country");
+
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "No Country";
+        } finally {
+            try{
+                if(stmt!=null)
+                    conn.close();
+            }catch(SQLException se){
+            }// do nothing
+            try{
+                if(conn!=null)
+                    conn.close();
+            }catch(SQLException se){
+                se.printStackTrace();
+            }//end finally try
+        }
+
+    }
+
 }
