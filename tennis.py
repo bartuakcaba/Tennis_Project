@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import pylab
 import pandas as pd 
 import numpy as np
+import csv
+
+from tennisMatchProbability import matchProb
 
 def readFile():
 	file = r'predictions.xls'
@@ -42,16 +45,16 @@ def plot_histogram():
 		plt.ylabel('Frequency')
 		plt.show()
 
-def plot_sys_constant(): 
+def plot_queue_length(): 
 		
-	x = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2]
-	y1 = [66.0069, 66.0069, 66.0069, 66.0069, 66.0069, 66.0069, 66.0069, 66.0069, 66.0069, 66.0069]
-	y2 = [64.5232, 64.6174, 64.6174, 64.6617, 64.6617, 64.6617, 64.7059, 64.6617, 64.6617, 64.7059]
-	y3 = [62.1148, 62.7869, 62.9508, 62.9508, 63.1148, 63.1148, 63.1148, 63.1148, 63.2787, 63.2787]
+	x = [3, 4, 5, 6, 7, 8, 9]
+	y1 = [65.55, 65.28, 65.89, 65.89, 65.47, 65.43, 64.90]
+	y2 = [64.22, 63.73, 64.04, 64.17, 63.73, 64.35, 64.13]
+	y3 = [62.62, 63.28, 64.75, 62.13, 63.11, 61.47, 63.61]
 	pylab.plot(x, y1, marker='x', label='2017')
 	pylab.plot(x, y2, marker='x', label='2018')
 	pylab.plot(x, y3, marker='x', label='2019')
-	pylab.xlabel('System Constant')
+	pylab.xlabel('Number of Momentum Changes Kept in Memory')
 	pylab.ylabel('Match Winner Prediction Accuracy')
 	pylab.legend(loc='best')
 	pylab.show()
@@ -96,4 +99,69 @@ def plot_loser_country():
 	ax.set_xlabel("Year")
 	ax.set_ylabel("% of All Wins by Native Player")
 	plt.show()
+
+def o_malley():
+
+	f = open('ServeP.csv')
+	csv_f = csv.reader(f)
+	serve_p = {}
+
+	for row in csv_f:
+		if (row[9] != "Service Points Won"):
+			serve_p[row[0]] = float(row[9])
+
+	f = open('ReturnP.csv')
+	csv_f = csv.reader(f)
+	return_p = {}
+
+	for row in csv_f:
+		if (row[8] != "Return Pts Won"):
+			return_p[row[0]] = float(row[8])	
+
+	f = open('match_data/atp_matches_2017.csv')
+	w_f = open('match_data/2018.csv', 'w')
+	writer = csv.writer(w_f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+	csv_f = csv.reader(f)
+
+	count = 0;
+	c_count = 0;
+
+	for row in csv_f:
+		# if (row[1] != "Us Open"):
+		# 	continue
+
+		if ((serve_p.get(row[10]) == None)):
+			serve_p[row[10]]=0.601
+			return_p[row[10]] = 0.346
+
+		if ((serve_p.get(row[20]) == None)):
+			serve_p[row[20]]=0.601
+			return_p[row[20]] = 0.346
+			
+
+		if ((serve_p.get(row[10]) != None) & (serve_p.get(row[20]) != None) & (row[4] != "D")):
+			writer.writerow(row)
+			wsp = serve_p[row[10]]
+			wrp = return_p[row[10]]
+
+			lsp = serve_p[row[20]]
+			lrp = return_p[row[20]]
+
+
+
+			lmp = matchProb(lsp, lrp)
+			wmp = matchProb(wsp, wrp)	
+
+			if (wmp > lmp):
+				c_count = c_count+1
+			count = count +1
+
+	print(float(c_count)/count)
+	print(c_count)			
+
+
+
+
+
 	

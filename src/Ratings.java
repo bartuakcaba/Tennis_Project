@@ -160,7 +160,7 @@ public class Ratings {
 
     public void addNewPlayer(Player player, Double[] playerRating) {
         rankings.put(player, playerRating);
-        Queue<Double> fifo = new CircularFifoQueue<Double>(8);
+        Queue<Double> fifo = new CircularFifoQueue<Double>(5);
         momentumMap.put(player, fifo);
 
         //Add player to hashmap of scores and opponents

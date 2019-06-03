@@ -212,9 +212,9 @@ public class FileReader {
 
                 if(predictFlag) {
 
-                    if (!entry[4].equals("A")) {
-                        continue;
-                    }
+//                    if (!entry[1].equals("Australian Open")) {
+//                        continue;
+//                    }
 
                     predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings,loserSurfRatings);
@@ -269,8 +269,6 @@ public class FileReader {
             clayRatings.writeToExcel("clay_ratings.xls");
             grassRatings.writeToExcel("grass_ratings.xls");
             hardRatings.writeToExcel("hard_ratings.xls");
-
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
