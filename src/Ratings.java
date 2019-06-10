@@ -29,7 +29,7 @@ public class Ratings {
 
     public void updateRatings() {
         writeToExcel2(opponents);
-//        scores = normaliseRankings(scores);
+        scores = normaliseRankings(scores);
 
         for(Map.Entry<Player, Double[]> rating : rankings.entrySet()) {
             Double[] convertedRatings = rater.convertGlicko2(rating.getValue());
@@ -137,8 +137,8 @@ public class Ratings {
 
     }
 
-    public void writeToExcel(String filename) {
-        writer.writeRatings(rankings, filename);
+    public void writeToExcel(String filename, Map<Player, Integer> titles) {
+        writer.writeRatings(rankings, filename, momentumMap, titles);
     }
 
     private void writeToExcel2(Map<Player, List<Double[]>> opponents) {
@@ -248,4 +248,20 @@ public class Ratings {
     }
 
 
+    public double getMomentumScore(Player player) {
+        double momentumSum = 0;
+        Iterator<Double> platesListIterator = momentumMap.get(player).iterator();
+        while (platesListIterator.hasNext()) {
+            Double entry = platesListIterator.next();
+            momentumSum += entry;
+        }
+
+        if (-100 <= momentumSum && momentumSum <= 100 ) {
+            return 0;
+        } else if ( momentumSum < -100) {
+            return  -1;
+        } else {
+            return 1;
+        }
+    }
 }

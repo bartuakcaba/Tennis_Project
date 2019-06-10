@@ -119,7 +119,7 @@ public class MatchlyUpdater {
             }
 
 
-            ratings.writeToExcel("ratings.xls");
+            ratings.writeToExcel("ratings.xls", noOfTitles);
 
 
         } catch (FileNotFoundException e) {
@@ -208,6 +208,7 @@ public class MatchlyUpdater {
             double lowerMomentum;
             int higherCountry;
             int lowerCountry;
+            int setScore = scoreCalculator.noOfSets(entry[27]);
 
 
             if(ratings.getRanking(winningPlayer)[0] > ratings.getRanking(losingPlayer)[0]) {
@@ -228,6 +229,7 @@ public class MatchlyUpdater {
                 lowerMomentum = calculateMomentum(ratings.getMomentum(winningPlayer));
                 higherCountry = entry[23].equals(currCountry) ? 1 : 0;
                 lowerCountry = entry[13].equals(currCountry) ? 1 : 0;
+                setScore = -setScore;
             }
 
             if(predictFlag) {
@@ -242,7 +244,8 @@ public class MatchlyUpdater {
                 //FOR SET PREDICTION
                 if (!entry[4].equals("G")) {
                     setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                            winnerSurfRatings, loserSurfRatings, h2h,  higherTitles, lowerTitles, higherAge,lowerAge,
+                            higherMomentum,lowerMomentum, higherCountry, lowerCountry, setScore);
                 }
             } else {
                 predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
@@ -252,7 +255,8 @@ public class MatchlyUpdater {
                 //FOR SET PREDICTION
                 if(!entry[4].equals("G")) {
                     setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                            winnerSurfRatings, loserSurfRatings, h2h, scoreCalculator.noOfSets(entry[27]));
+                            winnerSurfRatings, loserSurfRatings, h2h,  higherTitles, lowerTitles, higherAge,lowerAge,
+                            higherMomentum,lowerMomentum, higherCountry, lowerCountry, setScore);
                 }
             }
 

@@ -4,30 +4,37 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by bartu on 08/05/2019.
  */
 public class CSVWriter {
 
-    public void writeRatings(Map<Player, Double[]> rankings, String filename) {
+    public void writeRatings(Map<Player, Double[]> rankings, String filename, HashMap<Player, Queue<Double>> momentumMap, Map<Player, Integer> tltes) {
 
         Set<Player> players = rankings.keySet();
         try {
             Workbook workbook = new HSSFWorkbook();
             Sheet sheet = workbook.createSheet("new sheet");
+            Row row1 = sheet.createRow(0);
+            row1.createCell(1).setCellValue("Name");
+            row1.createCell(2).setCellValue("Rating");
+            row1.createCell(3).setCellValue("RD");
+            row1.createCell(4).setCellValue("Volatility");
+            row1.createCell(4).setCellValue("Momentum");
+            row1.createCell(4).setCellValue("Titles");
 
-            int i = 0;
+            int i = 1;
             for (Player player : players) {
                 Double[] ranking = rankings.get(player);
                 Row row = sheet.createRow(i);
-                row.createCell(1).setCellValue(player.getName());
-                row.createCell(2).setCellValue(ranking[0]);
-                row.createCell(3).setCellValue(ranking[1]);
-                row.createCell(4).setCellValue(ranking[2]);
+                row.createCell(0).setCellValue(player.getName());
+                row.createCell(1).setCellValue(ranking[0]);
+                row.createCell(2).setCellValue(ranking[1]);
+                row.createCell(3).setCellValue(ranking[2]);
+                row.createCell(4).setCellValue(getMomentumScore(momentumMap.get(player)));
+                row.createCell(5).setCellValue(tltes.get(player));
                 i++;
             }
 
@@ -111,6 +118,23 @@ public class CSVWriter {
             fileOut.close();
         } catch (Exception ioe) {
             ioe.printStackTrace();
+        }
+    }
+
+    public double getMomentumScore(Queue<Double> momentums) {
+        double momentumSum = 0;
+        Iterator<Double> platesListIterator = momentums.iterator();
+        while (platesListIterator.hasNext()) {
+            Double entry = platesListIterator.next();
+            momentumSum += entry;
+        }
+
+        if (-100 <= momentumSum && momentumSum <= 100 ) {
+            return 0;
+        } else if ( momentumSum < -100) {
+            return  -1;
+        } else {
+            return 1;
         }
     }
 }

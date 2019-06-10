@@ -258,4 +258,146 @@ public class DBHandler {
 
     }
 
+    public void fillAgeTable(int year) {
+        String csvFile = "match_data/atp_matches_" + Integer.toString(year) + ".csv";
+        BufferedReader br = null;
+        String line;
+        String cvsSplitBy = ",";
+        String url = "jdbc:sqlite:sqlite/tennis.db";
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            br = new BufferedReader(new FileReader(csvFile));
+            //Remove first line(headers of table)
+            br.readLine();
+
+            conn = DriverManager.getConnection(url);
+            stmt = conn.createStatement();
+
+
+            while ((line = br.readLine()) != null) {
+                String[] entry = line.split(cvsSplitBy);
+
+                //At the olympics there is an entry every other line
+                if (entry.length == 0) {
+                    continue;
+                }
+
+                String winningPlayer = entry[10].replaceAll("\\s+", "");
+                String losingPlayer = entry[20].replaceAll("\\s+", "");
+                if (entry[24].isEmpty() || entry[14].isEmpty()) {
+                    continue;
+                }
+                int winningAge = (int) Double.parseDouble(entry[14]);
+                int losingAge = (int) Double.parseDouble(entry[24]);
+
+
+                String searchQuery = "SELECT Age " +
+                        "from " + "Age " +
+                        "where " + "Player = ?";
+                PreparedStatement pstmt = conn.prepareStatement(searchQuery);
+
+                pstmt.setString(1, winningPlayer);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                //Means they haven't played before so we need to insert
+                if (!rs.isBeforeFirst()) {
+                    stmt.executeUpdate("INSERT INTO Age " + "VALUES ('" + winningPlayer + "', " + winningAge + ");");
+                } else {
+                    String updateQuery = "UPDATE Age SET Age = ? WHERE Player = ?";
+                    PreparedStatement preparedStmt = conn.prepareStatement(updateQuery);
+                    preparedStmt.setInt(1, winningAge);
+                    preparedStmt.setString(2, winningPlayer);
+                    preparedStmt.executeUpdate();
+                }
+
+                pstmt.setString(1, losingPlayer);
+
+                ResultSet rs1 = pstmt.executeQuery();
+
+                if (!rs1.isBeforeFirst()) {
+                    stmt.executeUpdate("INSERT INTO Age " + "VALUES ('" + losingPlayer + "', " + losingAge + ");");
+                } else {
+                    String updateQuery = "UPDATE Age SET Age = ? WHERE Player = ?";
+                    PreparedStatement preparedStmt = conn.prepareStatement(updateQuery);
+                    preparedStmt.setInt(1, losingAge);
+                    preparedStmt.setString(2, losingPlayer);
+                    preparedStmt.executeUpdate();
+                }
+
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                if (stmt != null)
+                    conn.close();
+            } catch (SQLException se) {
+            }// do nothing
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+
+    }
+
+    public int getAge(String player) {
+        String url = "jdbc:sqlite:sqlite/tennis.db";
+        Connection conn = null;
+        Statement stmt = null;
+
+        String p = player.replaceAll("\\s+", "");
+
+        String searchQuery = "SELECT Age " +
+                "from " + "Age " +
+                "where " + "Player = ?";
+
+        try  {
+            conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(searchQuery);
+
+            pstmt.setString(1, p);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            int age = rs.getInt("Age");
+
+            return age;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return 0;
+        } finally {
+            try{
+                if(stmt!=null)
+                    conn.close();
+            }catch(SQLException se){
+            }// do nothing
+            try{
+                if(conn!=null)
+                    conn.close();
+            }catch(SQLException se){
+                se.printStackTrace();
+            }//end finally try
+        }
+    }
+
 }

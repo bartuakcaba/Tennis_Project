@@ -9,35 +9,37 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        Predictor p = new Predictor();
-        SetPredictor sp = new SetPredictor();
-        int year = 2013;
+//        Predictor p = new Predictor();
+//        SetPredictor sp = new SetPredictor();
+//        int year = 2015;
+//
+//        FileReader r = new FileReader(p, sp);
+//
+//        while (year < 2020) {
+//            System.out.println(year);
+//            r.readData(year, false);
+//            year++;
+//        }
+//
+////        Classifier winCls = p.trainClassifier();
+////        p.setClassifier(winCls);
+//
+//        Classifier setCls =  sp.train();
+//
+//        r.readData(year, true);
+//        p.writepredictions();
+////        p.eval(winCls);
+//        sp.eval(setCls);
+////
+////        System.out.print(p.calculateAccuracy());
 
-        FileReader r = new FileReader(p, sp);
+        DBHandler dbHandler = new DBHandler();
 
-        while (year < 2017) {
-            System.out.println(year);
-            r.readData(year, false);
+        int year = 2015;
+
+        while (year < 2020) {
+            dbHandler.fillAgeTable(year);
             year++;
         }
-
-        Classifier winCls = p.trainClassifier();
-        p.setClassifier(winCls);
-
-        Classifier setCls =  sp.train();
-
-        r.readData(year, true);
-        p.writepredictions();
-        p.eval(winCls);
-        sp.eval(setCls);
-        r.writeTitleWInners();
-
-        System.out.print(p.calculateAccuracy());
-
-//        IndividualPredictor ip = new IndividualPredictor();
-//        ip.getPrediction("Djokovic N.", "Struff J.L.");
-//        ip.getPrediction("Fognini F.", "Zverev A.");
-//        ip.getPrediction("Thiem D.", "Monfils G.");
-//        ip.getPrediction("Khachanov K.", "Del Potro J.M.");
     }
 }

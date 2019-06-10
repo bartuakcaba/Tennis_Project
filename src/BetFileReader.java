@@ -193,20 +193,20 @@ public class BetFileReader {
                     predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0, 0, 0, 0);
 
-                    //FOR SET PREDICTION
-                    if (!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
-                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, Integer.parseInt(row[25].getContents()) + Integer.parseInt(row[26].getContents()));
-                    }
+//                    //FOR SET PREDICTION
+//                    if (!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
+//                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+//                                winnerSurfRatings, loserSurfRatings, h2h, Integer.parseInt(row[25].getContents()) + Integer.parseInt(row[26].getContents()));
+//                    }
                 } else {
                     predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
                             winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, 0,0,0,0, 0, 0);
 
                     //FOR SET PREDICTION
-                    if(!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
-                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
-                                winnerSurfRatings, loserSurfRatings, h2h, Integer.parseInt(row[25].getContents()) + Integer.parseInt(row[26].getContents()));
-                    }
+//                    if(!row[4].getContents().equals("Grand Slam") && !row[25].getContents().equals("") && !row[26].getContents().equals("")) {
+//                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+//                                winnerSurfRatings, loserSurfRatings, h2h, Integer.parseInt(row[25].getContents()) + Integer.parseInt(row[26].getContents()));
+//                    }
                 }
             }
 
@@ -214,10 +214,10 @@ public class BetFileReader {
             ratings.updateRatings();
             hardRatings.updateRatings();
 
-            ratings.writeToExcel("ratings.xls");
-            clayRatings.writeToExcel("clay_ratings.xls");
-            grassRatings.writeToExcel("grass_ratings.xls");
-            hardRatings.writeToExcel("hard_ratings.xls");
+            ratings.writeToExcel("ratings.xls", noOfTitles);
+            clayRatings.writeToExcel("clay_ratings.xls", noOfTitles);
+            grassRatings.writeToExcel("grass_ratings.xls", noOfTitles);
+            hardRatings.writeToExcel("hard_ratings.xls", noOfTitles);
 
 
         } catch (FileNotFoundException e) {

@@ -47,14 +47,14 @@ def plot_histogram():
 
 def plot_queue_length(): 
 		
-	x = [3, 4, 5, 6, 7, 8, 9]
-	y1 = [65.55, 65.28, 65.89, 65.89, 65.47, 65.43, 64.90]
-	y2 = [64.22, 63.73, 64.04, 64.17, 63.73, 64.35, 64.13]
-	y3 = [62.62, 63.28, 64.75, 62.13, 63.11, 61.47, 63.61]
+	x = [0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08]
+	y1 = [65.012, 65.40, 65.70,65.06,65.55,65.40,65.25,64.94,65.66]
+	y2 = [64.00,64.09,63.91,64.26,64.57,64.40,64.31,64.66,64.61]
+	y3 = [62.79,63.77,63.44,63.11,63.61,63.61,62.30,63.11,62.46]
 	pylab.plot(x, y1, marker='x', label='2017')
 	pylab.plot(x, y2, marker='x', label='2018')
 	pylab.plot(x, y3, marker='x', label='2019')
-	pylab.xlabel('Number of Momentum Changes Kept in Memory')
+	pylab.xlabel('Volatility Value')
 	pylab.ylabel('Match Winner Prediction Accuracy')
 	pylab.legend(loc='best')
 	pylab.show()
@@ -100,6 +100,70 @@ def plot_loser_country():
 	ax.set_ylabel("% of All Wins by Native Player")
 	plt.show()
 
+def plot_h2h():
+	first = [63.95, 63.78]
+	second = [64.66, 63.20]	
+	third = [66.16, 66.31]
+	fourth = [65.70, 65.47]
+	z = ['With No of titles', 'W/O No of Titles']
+
+	df = pd.DataFrame({'1990-2018': first, '2015-2018': second, '1990-2017': third,'2015-2017':fourth}, index=z)
+
+	ax = df.plot(linestyle='-', marker='o')
+	ax.set_xlabel("ML Model Attributes")
+	ax.set_ylabel("Succes %")
+	plt.xticks(range(len(df.index)), df.index)
+	plt.show()
+
+def plot_avg_age():
+	x = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]	
+	y = [1373, 1451, 1473, 1525, 1533, 1514, 1497, 1505, 1539, 1512, 1548, 1614, 1634, 1572, 1569, 1522, 1544, 1525, 1539, 1608, 1551, 1458, 1361]
+
+	pylab.plot(x, y, marker='x')
+	pylab.xlabel('Age')
+	pylab.ylabel('Average Rating')
+	pylab.show()
+
+def plot_bars():
+	# data to plot
+	n_groups = 4
+	general = (62.59, 62.14, 62.27, 55.55)
+	specific = (61.57, 61.87, 61.48, 58.25)
+	mix = (62.63, 62.23, 62.25, 59.75)
+
+	# create plot
+	fig, ax = plt.subplots()
+	index = np.arange(n_groups)
+	bar_width = 0.20
+	opacity = 0.8
+
+	rects1 = plt.bar(index, general, bar_width,
+	alpha=opacity,
+	color='b',
+	label='General Ratings')
+
+	rects2 = plt.bar(index + bar_width, specific, bar_width,
+	alpha=opacity,
+	color='g',
+	label='Surface Specific Ratings')
+
+	rects3 = plt.bar(index + bar_width + bar_width, mix, bar_width,
+	alpha=opacity,
+	color='r',
+	label='Both Ratings')
+
+	plt.xlabel('Classifier Model')
+	plt.ylabel('Prediction Succes %')
+	plt.title('2018 Matches')
+	plt.xticks(index + bar_width, ('Logistic Regression', 'Decision Tree',
+	 'SVM', 'Random Forest'))
+	plt.legend()
+
+	plt.tight_layout()
+	plt.show()
+
+
+
 def o_malley():
 
 	f = open('ServeP.csv')
@@ -118,7 +182,7 @@ def o_malley():
 		if (row[8] != "Return Pts Won"):
 			return_p[row[0]] = float(row[8])	
 
-	f = open('match_data/atp_matches_2017.csv')
+	f = open('match_data/atp_matches_2018.csv')
 	w_f = open('match_data/2018.csv', 'w')
 	writer = csv.writer(w_f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -128,8 +192,8 @@ def o_malley():
 	c_count = 0;
 
 	for row in csv_f:
-		# if (row[1] != "Us Open"):
-		# 	continue
+		if (row[1] != "Us Open"):
+			continue
 
 		if ((serve_p.get(row[10]) == None)):
 			serve_p[row[10]]=0.601
@@ -148,16 +212,15 @@ def o_malley():
 			lsp = serve_p[row[20]]
 			lrp = return_p[row[20]]
 
-
-
 			lmp = matchProb(lsp, lrp)
 			wmp = matchProb(wsp, wrp)	
 
 			if (wmp > lmp):
 				c_count = c_count+1
-			count = count +1
+			count = count + 1
 
 	print(float(c_count)/count)
+	print(count)
 	print(c_count)			
 
 

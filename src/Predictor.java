@@ -187,6 +187,9 @@ public class Predictor {
     public Classifier trainClassifier() throws Exception {
         RandomForest classifier = new RandomForest();
         classifier.setMaxDepth(10);
+        classifier.setNumFeatures(10);
+        classifier.setBreakTiesRandomly(false);
+        classifier.setNumIterations(100);
         classifier.buildClassifier(dataset);
 
 //        MultilayerPerceptron classifier = new MultilayerPerceptron();
@@ -334,25 +337,27 @@ public class Predictor {
         toWritePred[3] =loserRatings[1];
         toWritePred[4] = 0.0;
 
-        if (higher[0] - lower[0] > 200) {
-            predicted = higher;
-        } else {
-            if (higher[0] + higher[1] > lower[0] +lower[1] && higher[0] - higher[1] > lower[0] - lower[1]) {
-                predicted = higher;
-            } else {
-                if (higher[2] > lower[2]) {
-                    predicted = lower;
-                } else {
-                    predicted = higher;
-                }
-            }
+//        if (higher[0] - lower[0] > 200) {
+//            predicted = higher;
+//        } else {
+//            if (higher[0] + higher[1] > lower[0] +lower[1] && higher[0] - higher[1] > lower[0] - lower[1]) {
+//                predicted = higher;
+//            } else {
+//                if (higher[2] > lower[2]) {
+//                    predicted = lower;
+//                } else {
+//                    predicted = higher;
+//                }
+//            }
+//
+//        }
 
-        }
-
-        if (predicted.equals(winnerRatings)) {
+        if (higher.equals(winnerRatings)) {
             correctGuesses++;
             toWritePred[4] = 1.0;
         }
+
+        allGuesses++;
 
 //        if (higher[0] - lower[0] <= 100) {
 //            if (higher[0] - higher[1] > lower[0] - lower[1]) {
@@ -372,11 +377,11 @@ public class Predictor {
 //                toWritePred[4] = 1.0;
 //            }
 //        }
-
-        allGuesses++;
     }
 
     public double calculateAccuracy() {
+        System.out.println(correctGuesses);
+        System.out.println(allGuesses);
         return ((double) correctGuesses/allGuesses) * 100;
     }
 }
