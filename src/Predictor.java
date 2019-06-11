@@ -210,6 +210,62 @@ public class Predictor {
         System.out.println(eval1.toSummaryString("\nResults\n======\n", false));
     }
 
+    public double evalOne(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
+                          Double h2h, int higherTitles, int lowerTitles, double higherAge, double lowerAge,
+                          double higherMomentum, double lowerMomentum, int higherCountry, int lowerCountry) throws Exception {
+
+        Instance inst = new DenseInstance(22);
+        inst.setDataset(test);
+
+        Double[] higher = winningPlayer[0] > losingPlayer[0] ? winningPlayer : losingPlayer;
+        Double[] lower = winningPlayer[0] > losingPlayer[0] ? losingPlayer : winningPlayer;
+
+        if (winningPlayer[0] > losingPlayer[0]) {
+            inst.setValue(6, winSurface[0]);
+            inst.setValue(7, winSurface[1]);
+            inst.setValue(8, winSurface[2]);
+            inst.setValue(9, loseSurface[0]);
+            inst.setValue(10, loseSurface[1]);
+            inst.setValue(11, loseSurface[2]);
+        } else {
+            inst.setValue(6, loseSurface[0]);
+            inst.setValue(7, loseSurface[1]);
+            inst.setValue(8, loseSurface[2]);
+            inst.setValue(9, winSurface[0]);
+            inst.setValue(10, winSurface[1]);
+            inst.setValue(11, winSurface[2]);
+        }
+
+        inst.setValue(0, higher[0]);
+        inst.setValue(1, higher[1]);
+        inst.setValue(2, higher[2]);
+        inst.setValue(3, lower[0]);
+        inst.setValue(4, lower[1]);
+        inst.setValue(5, lower[2]);
+//        inst.setValue(12, h2h);
+//        inst.setValue(13, higherTitles);
+//        inst.setValue(14, lowerTitles);
+        inst.setValue(15, higherAge);
+        inst.setValue(16, lowerAge);
+        inst.setValue(17, higherMomentum);
+        inst.setValue(18, lowerMomentum);
+//        inst.setValue(19, higherCountry);
+//        inst.setValue(20, lowerCountry);
+        inst.setValue(21, higher.equals(winningPlayer) ? "1" : "0");
+
+        test.add(inst);
+
+        Evaluation eval = new Evaluation(dataset);
+
+        double[] prob = classifier.distributionForInstance(inst);
+
+        if (eval.evaluateModelOnce(classifier, inst) == inst.classValue()) {
+            return prob[0] > prob[1] ? prob[0] : prob[1];
+        } else {
+            return prob[0] > prob[1] ? -prob[0] : -prob[1];
+        }
+    }
+
     public void predOneByOne(Double[] winningPlayer, Double[] losingPlayer, Double[] winSurface, Double[] loseSurface,
                              Double h2h, String winner, String loser, String tourny) throws Exception {
         Instance inst = new DenseInstance(14);

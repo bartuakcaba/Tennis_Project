@@ -27,7 +27,7 @@ public class IndividualSetPred {
     DBHandler dbhandler;
 
     public IndividualSetPred() throws Exception {
-        mlp = (Classifier) weka.core.SerializationHelper.read("RG/RG_mlp.model");
+        mlp = (Classifier) weka.core.SerializationHelper.read("grass_set/grass.model");
         dbhandler = new DBHandler();
 
         ArrayList<Attribute> attrs = new ArrayList<>();
@@ -56,8 +56,26 @@ public class IndividualSetPred {
         attrs.add(att11);
         Attribute att12 = new Attribute("lower_surface_vol");
         attrs.add(att12);
-        Attribute att13 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"0", "1"})));
+        Attribute att13 = new Attribute("h2h");
         attrs.add(att13);
+        Attribute att14 = new Attribute("higherTitles");
+        attrs.add(att14);
+        Attribute att15 = new Attribute("lowerTitles");
+        attrs.add(att15);
+        Attribute att16 = new Attribute("higherAge");
+        attrs.add(att16);
+        Attribute att17 = new Attribute("lowerAge");
+        attrs.add(att17);
+        Attribute att18 = new Attribute("higherMomentum");
+        attrs.add(att18);
+        Attribute att19 = new Attribute("lowerMomentum");
+        attrs.add(att19);
+        Attribute att20 = new Attribute("higherCountry");
+        attrs.add(att20);
+        Attribute att21 = new Attribute("lowerCountry");
+        attrs.add(att21);
+        Attribute att22 = new Attribute("class", new ArrayList<>(Arrays.asList(new String[] {"-3", "-2", "2", "3"})));
+        attrs.add(att22);
 
         test = new Instances("test", attrs, 10000);
         test.setClassIndex(test.numAttributes()-1);
@@ -84,7 +102,7 @@ public class IndividualSetPred {
 
             for (int row = 0; row < totalNoOfRows; row++) {
 
-                if(sh.getCell(1, row).getContents().equals(player1)) {
+                if(sh.getCell(0, row).getContents().equals(player1)) {
                     p1Rating[0] = Double.parseDouble(sh.getCell(1, row).getContents());
                     p1Rating[1] = Double.parseDouble(sh.getCell(2, row).getContents());
                     p1Rating[2] = Double.parseDouble(sh.getCell(3, row).getContents());
@@ -92,7 +110,7 @@ public class IndividualSetPred {
                     p1Titles = Integer.parseInt(sh.getCell(5, row).getContents());
                 }
 
-                if(sh.getCell(1, row).getContents().equals(player2)) {
+                if(sh.getCell(0, row).getContents().equals(player2)) {
                     p2Rating[0] = Double.parseDouble(sh.getCell(1, row).getContents());
                     p2Rating[1] = Double.parseDouble(sh.getCell(2, row).getContents());
                     p2Rating[2] = Double.parseDouble(sh.getCell(3, row).getContents());
@@ -138,21 +156,19 @@ public class IndividualSetPred {
 
             for (int row = 0; row < totalNoOfRows; row++) {
 
-                if(sh.getCell(1, row).getContents().equals(player1)) {
-                    surfp1Rating[0] = Double.parseDouble(sh.getCell(2, row).getContents());
-                    surfp1Rating[1] = Double.parseDouble(sh.getCell(3, row).getContents());
-                    surfp1Rating[2] = Double.parseDouble(sh.getCell(4, row).getContents());
+                if(sh.getCell(0, row).getContents().equals(player1)) {
+                    surfp1Rating[0] = Double.parseDouble(sh.getCell(1, row).getContents());
+                    surfp1Rating[1] = Double.parseDouble(sh.getCell(2, row).getContents());
+                    surfp1Rating[2] = Double.parseDouble(sh.getCell(3, row).getContents());
                 }
 
-                if(sh.getCell(1, row).getContents().equals(player2)) {
-                    surfp2Rating[0] = Double.parseDouble(sh.getCell(2, row).getContents());
-                    surfp2Rating[1] = Double.parseDouble(sh.getCell(3, row).getContents());
-                    surfp2Rating[2] = Double.parseDouble(sh.getCell(4, row).getContents());
+                if(sh.getCell(0, row).getContents().equals(player2)) {
+                    surfp2Rating[0] = Double.parseDouble(sh.getCell(1, row).getContents());
+                    surfp2Rating[1] = Double.parseDouble(sh.getCell(2, row).getContents());
+                    surfp2Rating[2] = Double.parseDouble(sh.getCell(3, row).getContents());
                 }
 
             }
-
-
 
 
             Evaluation evaluation = new Evaluation(test);
@@ -173,10 +189,14 @@ public class IndividualSetPred {
                     higher =  p1Rating[0] > p2Rating[0] ? player1 : player2;
                     lower =  p1Rating[0] > p2Rating[0] ? player2 : player1;
 
-                    if (predicted == 1.0) {
-                        System.out.println("Winner should be " + higher + " against " + lower);
+                    if (predicted == 2) {
+                        System.out.println("Winner should be " + higher + " straight sets");
+                    } else if (predicted == 3) {
+                        System.out.println("Winner should be " + higher + " three sets" );
+                    } else if (predicted == -2) {
+                        System.out.println("Winner should be " + lower + " straight sets" );
                     } else {
-                        System.out.println("Winner should be " + lower + " against " + higher);
+                        System.out.println("Winner should be " + lower + " three sets" );
                     }
                 }
             }

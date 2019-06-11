@@ -69,6 +69,8 @@ public class FileReader {
             String prevSurf = "";
             int countryMatches = 0;
             int allMatches = 0;
+            double odd = 0;
+            double count = 0;
 
             while ((line = br.readLine()) != null) {
 
@@ -194,8 +196,8 @@ public class FileReader {
                     lowerTitles = noOfTitles.get(losingPlayer);
                     higherAge = Double.parseDouble(entry[14]);
                     lowerAge = Double.parseDouble(entry[24]);
-                    higherMomentum = calculateMomentum(losingPlayer);
-                    lowerMomentum = calculateMomentum(winningPlayer);
+                    higherMomentum = calculateMomentum(winningPlayer);
+                    lowerMomentum = calculateMomentum(losingPlayer);
                     higherCountry = entry[13].equals(currCountry) ? 1 : 0;
                     lowerCountry = entry[23].equals(currCountry) ? 1 : 0;
                 } else {
@@ -213,32 +215,58 @@ public class FileReader {
 
                 if(predictFlag) {
 
-//                    if (!entry[1].equals("Roland Garros")) {
-//                        continue;
-//                    }
+                    if (!entry[1].equals("Us Open") || entry[30].isEmpty()) {
+                        continue;
+                    }
 
-                    predictor.predictWithMulRatings(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                    if (entry[27].contains("RET") || entry[27].contains("W/O")) {
+                        continue;
+                    }
+
+                    Double[] winnerRatings = ratings.getRanking(winningPlayer);
+                    Double[] loserRatings = ratings.getRanking(losingPlayer);
+
+
+                    predictor.predictWithMulRatings(winnerRatings, loserRatings,
                             winnerSurfRatings,loserSurfRatings);
-                    predictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                    double prob = predictor.evalOne(winnerRatings, loserRatings,
                             winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
                             higherMomentum, lowerMomentum, higherCountry, lowerCountry);
+
+                    double tobet =1;
+                    if (prob > 0) {
+                        if (prob+0.2 > 1/Double.parseDouble(entry[30])) {
+//                            double tobet = 1 * ((1/Double.parseDouble(entry[30])) * (Double.parseDouble(entry[30]) + 1) -1)/Double.parseDouble(entry[30]);
+                            odd += tobet * Double.parseDouble(entry[30]);
+                            count +=  tobet;
+                        }
+                    } else {
+                        prob = -prob;
+                        if (prob+0.2 > 1/Double.parseDouble(entry[31])) {
+//                            double tobet = 1 * ((1/Double.parseDouble(entry[31])) * (Double.parseDouble(entry[31]) + 1) -1)/Double.parseDouble(entry[31]);
+                            count += tobet;
+                        }
+                    }
 
 
                     //FOR SET PREDICTION
                     if (!entry[4].equals("G")) {
-                        setPredictor.addToTest(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                        setPredictor.addToTest(winnerRatings, loserRatings,
                                 winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
                                 higherMomentum, lowerMomentum, higherCountry, lowerCountry, setScore);
                     }
                 } else {
-                    predictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                    Double[] winnerRatings = ratings.getRanking(winningPlayer);
+                    Double[] loserRatings = ratings.getRanking(losingPlayer);
+
+                    predictor.addToDataset(winnerRatings, loserRatings,
                             winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
                             higherMomentum, lowerMomentum, higherCountry, lowerCountry);
 
 
                     //FOR SET PREDICTION
                     if(!entry[4].equals("G")) {
-                        setPredictor.addToDataset(ratings.getRanking(winningPlayer), ratings.getRanking(losingPlayer),
+                        setPredictor.addToDataset(winnerRatings, loserRatings,
                                 winnerSurfRatings, loserSurfRatings, h2h, higherTitles, lowerTitles, higherAge, lowerAge,
                                 higherMomentum, lowerMomentum, higherCountry, lowerCountry, setScore);
                     }
@@ -273,11 +301,12 @@ public class FileReader {
             grassRatings.writeToExcel("grass_ratings.xls", noOfTitles);
             hardRatings.writeToExcel("hard_ratings.xls", noOfTitles);
 
-//            if(predictFlag) {
-//                for (Map.Entry<Double, Double> entr : avgTitle.entrySet()) {
-//                    System.out.println(entr.getKey() + " " + entr.getValue());
-//                }
-//            }
+            if(predictFlag) {
+                System.out.println("odds");
+                System.out.println(odd);
+                System.out.println(count);
+            }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

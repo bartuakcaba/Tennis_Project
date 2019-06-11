@@ -122,6 +122,7 @@ def plot_avg_age():
 	pylab.plot(x, y, marker='x')
 	pylab.xlabel('Age')
 	pylab.ylabel('Average Rating')
+	plt.xticks(range(len(df.index)), df.index)
 	pylab.show()
 
 def plot_bars():
@@ -190,10 +191,21 @@ def o_malley():
 
 	count = 0;
 	c_count = 0;
+	odd = 0;
+	bet = 0;
 
 	for row in csv_f:
-		if (row[1] != "Us Open"):
+		if ("RET" in row[27]):
 			continue
+
+		if ("W/O" in row[27]):
+			continue
+
+		if (row[1] != "Roland Garros"):
+			continue
+
+		if (row[30] == ""):
+			continue	
 
 		if ((serve_p.get(row[10]) == None)):
 			serve_p[row[10]]=0.601
@@ -213,15 +225,32 @@ def o_malley():
 			lrp = return_p[row[20]]
 
 			lmp = matchProb(lsp, lrp)
-			wmp = matchProb(wsp, wrp)	
+			wmp = matchProb(wsp, wrp)
+
 
 			if (wmp > lmp):
 				c_count = c_count+1
-			count = count + 1
+				p_s = 1/(float) (row[30])
+				if (wmp > 0.5):
+					print (row[10])
+					print(wmp)
+					print ((row[30]))
+					odd += (float) (row[30])
+					bet = bet + 1
 
-	print(float(c_count)/count)
-	print(count)
-	print(c_count)			
+			else:
+				p_s = 1/(float) (row[31])
+				if (lmp > 0.5):
+					bet = bet + 1
+
+			# if (wmp > lmp):
+			# 	odd += (float) (row[30])	
+
+			# count = count + 1
+
+	# print(odd)
+	print(odd)	
+	print(count)	
 
 
 

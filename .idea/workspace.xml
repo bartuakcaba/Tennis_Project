@@ -2,19 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e4ec3ed-74aa-44da-859c-80111c312bf9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/IndividualSetPred.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Tennis_Project/Main.class" afterPath="$PROJECT_DIR$/out/production/Tennis_Project/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sqlite/tennis.db" afterPath="$PROJECT_DIR$/sqlite/tennis.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BetFileReader.java" afterPath="$PROJECT_DIR$/src/BetFileReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CSVWriter.java" afterPath="$PROJECT_DIR$/src/CSVWriter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DBHandler.java" afterPath="$PROJECT_DIR$/src/DBHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/match_data/atp_matches_2018.csv" afterPath="$PROJECT_DIR$/match_data/atp_matches_2018.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/match_data/atp_matches_2019.csv" afterPath="$PROJECT_DIR$/match_data/atp_matches_2019.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FileReader.java" afterPath="$PROJECT_DIR$/src/FileReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/IndividualSetPred.java" afterPath="$PROJECT_DIR$/src/IndividualSetPred.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MatchlyUpdater.java" afterPath="$PROJECT_DIR$/src/MatchlyUpdater.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Predictor.java" afterPath="$PROJECT_DIR$/src/Predictor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Ratings.java" afterPath="$PROJECT_DIR$/src/Ratings.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SetPredictor.java" afterPath="$PROJECT_DIR$/src/SetPredictor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tennis.py" afterPath="$PROJECT_DIR$/tennis.py" />
     </list>
     <ignored path="Tennis_Project.iws" />
@@ -41,12 +36,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.1580882">
-              <caret line="42" column="9" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
+            <state vertical-scroll-proportion="-23.333334">
+              <caret line="42" column="61" selection-start-line="42" selection-start-column="61" selection-end-line="42" selection-end-column="61" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IndividualSetPred.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/IndividualSetPred.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.02757353">
+              <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -55,7 +62,7 @@
         <entry file="file://$PROJECT_DIR$/src/IndividualPredictor.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="189" column="5" selection-start-line="22" selection-start-column="4" selection-end-line="189" selection-end-column="5" />
+              <caret line="155" column="0" selection-start-line="155" selection-start-column="0" selection-end-line="155" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -63,13 +70,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IndividualSetPred.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/IndividualSetPred.java">
+      <file leaf-file-name="Predictor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Predictor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="45.25926">
-              <caret line="125" column="28" selection-start-line="125" selection-start-column="28" selection-end-line="125" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="261" column="0" selection-start-line="261" selection-start-column="0" selection-end-line="261" selection-end-column="0" />
               <folding>
+                <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
+                <marker date="1560285266885" expanded="true" signature="3886:3918" placeholder="..." />
+                <marker date="1560285266885" expanded="true" signature="3977:4011" placeholder="..." />
+                <marker date="1560285266885" expanded="true" signature="7096:7149" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -78,13 +89,13 @@
       <file leaf-file-name="FileReader.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/FileReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.7777777">
-              <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="187" selection-end-column="33" />
+            <state vertical-scroll-proportion="-7.2222223">
+              <caret line="229" column="28" selection-start-line="229" selection-start-column="28" selection-end-line="229" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#17030#17031#0" expanded="true" />
-                <element signature="e#17085#17086#0" expanded="true" />
-                <marker date="1560185618036" expanded="true" signature="11205:11252" placeholder="..." />
+                <element signature="e#18154#18155#0" expanded="true" />
+                <element signature="e#18209#18210#0" expanded="true" />
+                <marker date="1560287783960" expanded="true" signature="12384:12431" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -132,7 +143,7 @@
         <entry file="file://$PROJECT_DIR$/src/SetPredictor.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="162" column="35" selection-start-line="162" selection-start-column="35" selection-end-line="162" selection-end-column="35" />
+              <caret line="31" column="24" selection-start-line="31" selection-start-column="24" selection-end-line="31" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -166,17 +177,17 @@
         <option value="$PROJECT_DIR$/src/ScoreCalculator.java" />
         <option value="$PROJECT_DIR$/src/IndividualPredictor.java" />
         <option value="$PROJECT_DIR$/src/Glicko2.java" />
-        <option value="$PROJECT_DIR$/src/Predictor.java" />
         <option value="$PROJECT_DIR$/src/Player.java" />
         <option value="$PROJECT_DIR$/src/SetPredictor.java" />
         <option value="$PROJECT_DIR$/src/Ratings.java" />
         <option value="$PROJECT_DIR$/src/CSVWriter.java" />
-        <option value="$PROJECT_DIR$/src/FileReader.java" />
         <option value="$PROJECT_DIR$/src/BetFileReader.java" />
         <option value="$PROJECT_DIR$/src/MatchlyUpdater.java" />
-        <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/src/DBHandler.java" />
         <option value="$PROJECT_DIR$/src/IndividualSetPred.java" />
+        <option value="$PROJECT_DIR$/src/Predictor.java" />
+        <option value="$PROJECT_DIR$/src/FileReader.java" />
+        <option value="$PROJECT_DIR$/src/Main.java" />
       </list>
     </option>
   </component>
@@ -712,7 +723,13 @@
       <option name="project" value="LOCAL" />
       <updated>1559578874287</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Adding individual set prediciton">
+      <created>1560188451889</created>
+      <option name="number" value="00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1560188451889</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -729,7 +746,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25791326" sideWeight="0.49722221" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18541667" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18611111" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -755,7 +772,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Publish first ratings - need to fix" />
     <MESSAGE value="Fix scale of ratings&#10;" />
     <MESSAGE value="Remove match level weighting" />
     <MESSAGE value="Add predictor&#10;" />
@@ -780,11 +796,50 @@
     <MESSAGE value="Fix momentum, giving good results right now" />
     <MESSAGE value="Add nationality" />
     <MESSAGE value="EXACTLY how we beat O'Malley for 2017&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="EXACTLY how we beat O'Malley for 2017&#10;" />
+    <MESSAGE value="Adding individual set prediciton" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding individual set prediciton" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="454" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/IndividualSetPred.java</url>
+          <line>173</line>
+          <properties />
+          <option name="timeStamp" value="458" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/FileReader.java</url>
+          <line>240</line>
+          <properties />
+          <option name="timeStamp" value="476" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Predictor.java</url>
+          <line>261</line>
+          <properties />
+          <option name="timeStamp" value="477" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Predictor.java</url>
+          <line>262</line>
+          <properties />
+          <option name="timeStamp" value="479" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Predictor.java</url>
+          <line>264</line>
+          <properties />
+          <option name="timeStamp" value="480" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/FileReader.java</url>
+          <line>246</line>
+          <properties />
+          <option name="timeStamp" value="482" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="483" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -793,19 +848,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/FileReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#17030#17031#0" expanded="true" />
-            <element signature="e#17085#17086#0" expanded="true" />
-            <marker date="1560185618036" expanded="true" signature="11205:11252" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/SetPredictor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -891,9 +933,9 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <marker date="1560121121339" expanded="true" signature="3886:3918" placeholder="..." />
-            <marker date="1560121121339" expanded="true" signature="3977:4011" placeholder="..." />
-            <marker date="1560121121339" expanded="true" signature="7096:7149" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="3886:3918" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="3977:4011" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="7096:7149" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -904,9 +946,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#17030#17031#0" expanded="true" />
-            <element signature="e#17085#17086#0" expanded="true" />
-            <marker date="1560185618036" expanded="true" signature="11205:11252" placeholder="..." />
+            <element signature="e#18154#18155#0" expanded="true" />
+            <element signature="e#18209#18210#0" expanded="true" />
+            <marker date="1560287783960" expanded="true" signature="12384:12431" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -944,9 +986,9 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <marker date="1560121121339" expanded="true" signature="3886:3918" placeholder="..." />
-            <marker date="1560121121339" expanded="true" signature="3977:4011" placeholder="..." />
-            <marker date="1560121121339" expanded="true" signature="7096:7149" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="3886:3918" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="3977:4011" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="7096:7149" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -957,9 +999,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#17030#17031#0" expanded="true" />
-            <element signature="e#17085#17086#0" expanded="true" />
-            <marker date="1560185618036" expanded="true" signature="11205:11252" placeholder="..." />
+            <element signature="e#18154#18155#0" expanded="true" />
+            <element signature="e#18209#18210#0" expanded="true" />
+            <marker date="1560287783960" expanded="true" signature="12384:12431" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1036,9 +1078,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#17030#17031#0" expanded="true" />
-            <element signature="e#17085#17086#0" expanded="true" />
-            <marker date="1560185618036" expanded="true" signature="11205:11252" placeholder="..." />
+            <element signature="e#18154#18155#0" expanded="true" />
+            <element signature="e#18209#18210#0" expanded="true" />
+            <marker date="1560287783960" expanded="true" signature="12384:12431" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1109,6 +1151,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1145,31 +1188,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Predictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="189" column="38" selection-start-line="189" selection-start-column="38" selection-end-line="189" selection-end-column="38" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <marker date="1560121121339" expanded="true" signature="3886:3918" placeholder="..." />
-            <marker date="1560121121339" expanded="true" signature="3977:4011" placeholder="..." />
-            <marker date="1560121121339" expanded="true" signature="7096:7149" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Tournament.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="25" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
-          <folding>
-            <element signature="e#643#644#0" expanded="true" />
-            <element signature="e#675#676#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Glicko2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1202,54 +1220,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Ratings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="136" column="0" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Player.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.41322315">
           <caret line="13" column="32" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/IndividualPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="189" column="5" selection-start-line="22" selection-start-column="4" selection-end-line="189" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/SetPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="162" column="35" selection-start-line="162" selection-start-column="35" selection-end-line="162" selection-end-column="35" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/FileReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.7777777">
-          <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="187" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#17030#17031#0" expanded="true" />
-            <element signature="e#17085#17086#0" expanded="true" />
-            <marker date="1560185618036" expanded="true" signature="11205:11252" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1264,21 +1239,99 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/IndividualSetPred.java">
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_71.jdk/Contents/Home/src.zip!/java/lang/Double.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="45.25926">
-          <caret line="125" column="28" selection-start-line="125" selection-start-column="28" selection-end-line="125" selection-end-column="28" />
+        <state vertical-scroll-proportion="0.33217993">
+          <caret line="321" column="68" selection-start-line="321" selection-start-column="66" selection-end-line="321" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#41182#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SetPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="24" selection-start-line="31" selection-start-column="24" selection-end-line="31" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Tournament.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="32" column="25" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
+          <folding>
+            <element signature="e#643#644#0" expanded="true" />
+            <element signature="e#675#676#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Ratings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="136" column="0" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/IndividualPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="155" column="0" selection-start-line="155" selection-start-column="0" selection-end-line="155" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Predictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="261" column="0" selection-start-line="261" selection-start-column="0" selection-end-line="261" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <marker date="1560285266885" expanded="true" signature="3886:3918" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="3977:4011" placeholder="..." />
+            <marker date="1560285266885" expanded="true" signature="7096:7149" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/FileReader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.2222223">
+          <caret line="229" column="28" selection-start-line="229" selection-start-column="28" selection-end-line="229" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#18154#18155#0" expanded="true" />
+            <element signature="e#18209#18210#0" expanded="true" />
+            <marker date="1560287783960" expanded="true" signature="12384:12431" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1580882">
-          <caret line="42" column="9" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
+        <state vertical-scroll-proportion="-23.333334">
+          <caret line="42" column="61" selection-start-line="42" selection-start-column="61" selection-end-line="42" selection-end-column="61" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/IndividualSetPred.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.02757353">
+          <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
